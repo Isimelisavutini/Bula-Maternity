@@ -169,9 +169,31 @@ const pregnancyGrowth = {
   },
 };
 
+const growthStages = [
+  { week: 4, image: "/pregnancy/stage-04.png", note: "A tiny beginning takes root." },
+  { week: 12, image: "/pregnancy/stage-12.png", note: "Little fingers and toes are forming." },
+  { week: 20, image: "/pregnancy/stage-20.png", note: "Small movements become more noticeable." },
+  { week: 26, image: "/pregnancy/stage-26.png", note: "Your baby is growing and responding to sound." },
+  { week: 32, image: "/pregnancy/stage-32.png", note: "Growing stronger, with less room to stretch." },
+  { week: 37, image: "/pregnancy/stage-37.png", note: "Getting ready for your first hello." },
+];
+
 function GrowthCard({ week }) {
   const growth = pregnancyGrowth[week];
-  if (!growth) return null;
+  const size = milestones.reduce((best, item) => item.week <= week ? item : best, milestones[0]);
+  const stage = growthStages.reduce((best, item) => item.week <= week ? item : best, growthStages[0]);
+  if (!growth) return (
+    <article className="growth-card">
+      <div className="growth-copy">
+        <h3>Your baby’s development</h3>
+        <div className="growth-size">
+          <strong>{size.emoji} Around the size of a {size.label}</strong>
+          <span>At the week {size.week} milestone: {size.length} · {size.weight}</span>
+        </div>
+        <p>{stage.note}</p>
+      </div>
+    </article>
+  );
 
   return (
     <article className="growth-card" aria-labelledby={`growth-week-${week}`}>
@@ -237,16 +259,11 @@ function PatientDashboard({ compact = false }) {
   const days = week * 7;
   const remaining = 280 - days;
   const progress = Math.round((days / 280) * 100);
-  const milestone = milestones.reduce(
-    (best, item) => (item.week <= week ? item : best),
-    milestones[0],
-  );
   const trimester = week <= 13 ? 1 : week <= 27 ? 2 : 3;
-  const status =
-    week === 4
-      ? "Implantation is established and early support structures are forming."
-      : "Baby’s senses are active!";
-  const growth = pregnancyGrowth[week];
+  const stage = growthStages.reduce(
+    (best, item) => (item.week <= week ? item : best),
+    growthStages[0],
+  );
   function logKick() {
     setKicks((value) => value + 1);
     setHeartId((value) => value + 1);
@@ -283,41 +300,33 @@ function PatientDashboard({ compact = false }) {
           W{week} D{days % 7 || 7}
         </button>
       </div>
-      <article className={`day-card ${growth ? "has-growth-image" : ""}`}>
-        {growth ? (
+      <article className="day-card day-card-expanded has-growth-image">
+        {stage ? (
           <>
             <Image
               className="day-card-image"
-              src={growth.image}
+              src={stage.image}
               alt=""
               fill
               sizes="(max-width: 800px) 100vw, 820px"
-              priority={week === 4}
+              priority
               aria-hidden="true"
             />
             <div className="day-card-image-overlay" />
           </>
         ) : null}
-        <div className="day-rings" />
         <div className="day-meta">
-          <span>✦ PREGNANCY TIMELINE · DAY STATUS</span>
+          <span>Week {week}</span>
           <b>Trimester {trimester}</b>
         </div>
         <div className="day-number">
           Day {days} <small>of 280 days</small>
         </div>
         <p>
-          ● Day {days % 7 || 7} of your current week · {status}
+          {stage.note}
         </p>
         <div className="baby-snapshot">
-          <span className="baby-emoji">{milestone.emoji}</span>
-          <div>
-            <small>BABY SIZE COMPARISON</small>
-            <strong>Size of a {milestone.label}</strong>
-            <em>
-              {milestone.length}, {milestone.weight}
-            </em>
-          </div>
+          <small className="stage-caption">Illustrative development stage</small>
           <div className="kick-wrap">
             <i key={heartId}>♥</i>
             <button

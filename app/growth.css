@@ -19,7 +19,7 @@
 .day-card-image {
   z-index: 0;
   object-fit: cover;
-  object-position: center 44%;
+  object-position: center;
   transition: opacity 0.35s ease;
 }
 
@@ -29,10 +29,54 @@
   inset: 0;
   background: linear-gradient(
     90deg,
-    rgba(5, 84, 88, 0.98) 0%,
-    rgba(5, 96, 97, 0.9) 46%,
-    rgba(7, 75, 79, 0.52) 100%
+    rgba(4, 57, 63, 0.94) 0%,
+    rgba(4, 57, 63, 0.62) 38%,
+    rgba(4, 57, 63, 0.04) 72%
   );
+}
+
+.day-card-expanded {
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  padding: 30px;
+}
+
+.day-card-expanded .day-meta span {
+  font-size: 18px;
+  letter-spacing: 0;
+  color: white;
+}
+
+.day-card-expanded .day-number {
+  margin-top: 65px;
+  font-size: clamp(42px, 5vw, 64px);
+}
+
+.day-card-expanded > p {
+  max-width: 44%;
+  margin: 15px 0 30px;
+  font-size: 15px;
+  color: white;
+}
+
+.day-card-expanded .baby-snapshot {
+  margin-top: auto;
+  border: 0;
+  align-items: center;
+}
+
+.day-card-expanded .stage-caption {
+  font-size: 9px;
+  letter-spacing: 0;
+  color: #d3e7e5;
+  font-weight: 500;
+}
+
+.day-card-expanded .kick-wrap button {
+  min-height: 44px;
+  padding: 10px 15px;
+  background: rgba(4, 57, 63, 0.85);
 }
 
 .day-card.has-growth-image .day-rings {
@@ -125,17 +169,22 @@
   }
 
   .day-card-image {
-    object-position: 58% center;
+    object-position: 64% center;
   }
 
   .day-card-image-overlay {
     background: linear-gradient(
       90deg,
-      rgba(5, 84, 88, 0.98) 0%,
-      rgba(5, 96, 97, 0.89) 62%,
-      rgba(7, 75, 79, 0.55) 100%
+      rgba(4, 57, 63, 0.9) 0%,
+      rgba(4, 57, 63, 0.42) 55%,
+      rgba(4, 57, 63, 0.08) 100%
     );
   }
+
+  .day-card-expanded { min-height: 420px; padding: 23px 20px; }
+  .day-card-expanded .day-number { margin-top: 74px; font-size: 43px; }
+  .day-card-expanded .day-number small { display: block; margin-top: 8px; font-size: 13px; }
+  .day-card-expanded > p { max-width: 60%; font-size: 13px; }
 
   .week-jumps {
     grid-template-columns: repeat(2, 1fr);

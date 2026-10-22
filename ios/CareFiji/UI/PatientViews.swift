@@ -72,34 +72,38 @@ struct PregnancyDayCard: View {
     let week: Int
     let kicks: Int
     let logKick: () -> Void
-    private var comparison: (emoji: String, title: String, detail: String, status: String) {
-        if week == 4 { return ("🌱", "Tiny poppy seed", "Approx. 1 mm · Early implantation", "Implantation is established and early support structures are forming.") }
-        return ("🧡", "Fresh Fiji papaya", "35.6 cm · 760g", "Baby’s senses are active!")
+    private var stage: (image: String, note: String) {
+        switch week {
+        case ..<12: return ("Stage04", "A tiny beginning takes root.")
+        case ..<20: return ("Stage12", "Little fingers and toes are forming.")
+        case ..<26: return ("Stage20", "Small movements become more noticeable.")
+        case ..<32: return ("Stage26", "Your baby is growing and responding to sound.")
+        case ..<37: return ("Stage32", "Growing stronger, with less room to stretch.")
+        default: return ("Stage37", "Getting ready for your first hello.")
+        }
     }
     var body: some View {
         ZStack(alignment: .topTrailing) {
             LinearGradient(colors: [CareColors.darkTeal, CareColors.teal], startPoint: .topLeading, endPoint: .bottomTrailing)
-            if week == 4 {
-                Image(decorative: "Week04")
-                    .resizable()
-                    .scaledToFill()
-                    .transition(.opacity)
-                LinearGradient(colors: [CareColors.darkTeal.opacity(0.97), CareColors.darkTeal.opacity(0.76), CareColors.navy.opacity(0.34)], startPoint: .leading, endPoint: .trailing)
-            } else {
-                Circle().stroke(Color.white.opacity(0.07), lineWidth: 18).frame(width: 210, height: 210).offset(x: 65, y: -65)
-            }
             VStack(alignment: .leading, spacing: 12) {
-                HStack { Text("✦ PREGNANCY TIMELINE · DAY STATUS").font(.caption2.bold()).tracking(1); Spacer(); Text("Trimester \(week <= 13 ? 1 : week <= 27 ? 2 : 3)").font(.caption2.bold()).padding(6).background(Color.white.opacity(0.15)).clipShape(Capsule()) }
-                HStack(alignment: .firstTextBaseline, spacing: 6) { Text("Day \(day)").font(.system(size: 38, weight: .black, design: .rounded)); Text("of 280 days").font(.subheadline.bold()) }
-                Text("Day \(day % 7 == 0 ? 7 : day % 7) of your current week · \(comparison.status)").font(.caption).foregroundColor(.white.opacity(0.82))
-                Divider().overlay(Color.white.opacity(0.2))
+                HStack { Text("Week \(week)").font(.headline); Spacer(); Text("Trimester \(week <= 13 ? 1 : week <= 27 ? 2 : 3)").font(.caption.bold()).padding(6).background(Color.white.opacity(0.15)).clipShape(Capsule()) }
+                Spacer(minLength: 60)
+                Text("Day \(day)").font(.largeTitle.bold())
+                Text("of 280 days").font(.subheadline)
+                Text(stage.note).font(.subheadline).frame(maxWidth: 190, alignment: .leading).fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 40)
                 HStack {
-                    Text(comparison.emoji).font(.title).frame(width: 44, height: 44).background(Color.white.opacity(0.14)).clipShape(RoundedRectangle(cornerRadius: 13))
-                    VStack(alignment: .leading) { Text("BABY SIZE COMPARISON").font(.system(size: 8, weight: .bold)).tracking(1); Text(comparison.title).font(.caption.bold()); Text(comparison.detail).font(.caption2) }
+                    Text("Illustrative development stage").font(.caption2)
                     Spacer()
-                    Button(action: logKick) { Label("Log Kick \(kicks)", systemImage: "heart.fill") }.buttonStyle(.bordered).tint(.white).accessibilityHint("Records one baby kick and uploads it when a connection is available")
+                    Button(action: logKick) { Label("Log Kick \(kicks)", systemImage: "heart.fill").frame(minHeight: 32) }.buttonStyle(.bordered).tint(.white).background(CareColors.navy.opacity(0.6)).clipShape(RoundedRectangle(cornerRadius: 10)).accessibilityHint("Records one baby kick and uploads it when a connection is available")
                 }
-            }.padding(20).foregroundColor(.white)
+            }.padding(24).frame(minHeight: 420).foregroundColor(.white)
+                .background {
+                    GeometryReader { geometry in
+                        Image(decorative: stage.image).resizable().scaledToFill().frame(width: geometry.size.width, height: geometry.size.height).clipped()
+                        LinearGradient(colors: [CareColors.navy.opacity(0.88), CareColors.darkTeal.opacity(0.38), .clear], startPoint: .leading, endPoint: .trailing)
+                    }
+                }
         }.clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)).shadow(color: CareColors.darkTeal.opacity(0.2), radius: 18, y: 10).animation(.easeInOut(duration: 0.3), value: week)
     }
 }
