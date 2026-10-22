@@ -2,6 +2,14 @@
 
 import { useEffect, useState } from "react";
 
+function MenuIcon() {
+  return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" /></svg>;
+}
+
+function CloseIcon() {
+  return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg>;
+}
+
 const navigation = {
   Administrator: ["Dashboard", "Patients", "Appointments", "Clinical Care", "Maternity Wards", "Billing", "Staff", "Reports", "Security", "Architecture"],
   Doctor: ["Dashboard", "Patients", "Appointments", "Clinical Care", "Maternity Wards"],
@@ -75,7 +83,7 @@ function Login({ onLogin }) {
 }
 
 function DataTable({ headers, rows }) {
-  return <div className="table"><table><thead><tr>{headers.map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={row.key || index}>{row.cells.map((cell, cellIndex) => <td key={cellIndex}>{cell}</td>)}</tr>)}</tbody></table></div>;
+  return <div className="table"><table><thead><tr>{headers.map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={row.key || index}>{row.cells.map((cell, cellIndex) => <td data-label={headers[cellIndex]} key={cellIndex}>{cell}</td>)}</tr>)}</tbody></table></div>;
 }
 
 function Dashboard({ data, user }) {
@@ -124,6 +132,7 @@ export default function BulaApp() {
   const [audit, setAudit] = useState(null);
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -141,6 +150,13 @@ export default function BulaApp() {
   useEffect(() => {
     if (page === "Security" && user?.role === "Administrator") api("audit").then((result) => setAudit(result.audit)).catch((error) => setStatus(error.message));
   }, [page, user?.role]);
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const closeOnEscape = (event) => { if (event.key === "Escape") setMenuOpen(false); };
+    document.addEventListener("keydown", closeOnEscape);
+    document.body.classList.add("menu-open");
+    return () => { document.removeEventListener("keydown", closeOnEscape); document.body.classList.remove("menu-open"); };
+  }, [menuOpen]);
 
   async function act(action, payload) {
     setStatus("");
@@ -155,13 +171,15 @@ export default function BulaApp() {
 
   async function logout() {
     await api("logout", { method: "POST", body: "{}" });
-    setUser(null); setData(null); setPage("Dashboard"); setAudit(null);
+    setUser(null); setData(null); setPage("Dashboard"); setAudit(null); setMenuOpen(false);
   }
 
   if (loading) return <div className="loading">Loading CareFiji…</div>;
   if (!user || !data) return <Login onLogin={async (nextUser) => { setUser(nextUser); const result = await api("data"); setData(result.data); }} />;
   const pages = navigation[user.role] || ["Dashboard"];
   const activePage = pages.includes(page) ? page : "Dashboard";
+  const initials = user.name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+  const choosePage = (nextPage) => { setPage(nextPage); setMenuOpen(false); };
 
-  return <div className="shell"><aside><div className="brand"><span className="mark">✚</span><span><strong>CareFiji</strong><small>BULA MATERNITY</small></span></div><p className="sidecaption">SECURE DEMO WORKSPACE</p><nav>{pages.map((item) => <button key={item} className={item === activePage ? "active" : ""} onClick={() => setPage(item)}>{item}</button>)}</nav><button className="logout" onClick={logout}>Sign out</button><div className="bottom">Suva, Fiji · Synthetic data only</div></aside><main><header><div><small>CAREFIJI / {activePage.toUpperCase()}</small><h1>{activePage}</h1></div><div className="actions"><span>DEMO ONLY</span><b>{user.role}</b></div></header><section><Content page={activePage} data={data} user={user} act={act} audit={audit} />{status ? <p className="status-message" role="status">{status}</p> : null}<p className="status">Authenticated prototype · no real patient information permitted.<br />Copyright @ BASA</p></section></main></div>;
+  return <div className="shell"><div className="mobile-bar"><div className="brand brand-mobile"><span className="mark">✚</span><span><strong>CareFiji</strong><small>BULA MATERNITY</small></span></div><div className="mobile-actions"><span className="avatar" aria-label={`Signed in as ${user.name}`}>{initials}</span><button className="icon-button" aria-label="Open navigation" aria-controls="app-navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><MenuIcon /></button></div></div>{menuOpen ? <button className="menu-scrim" aria-label="Close navigation" onClick={() => setMenuOpen(false)} /> : null}<aside id="app-navigation" className={menuOpen ? "menu-visible" : ""} role={menuOpen ? "dialog" : undefined} aria-modal={menuOpen || undefined} aria-label="Navigation menu"><div className="drawer-head"><div className="brand"><span className="mark">✚</span><span><strong>CareFiji</strong><small>BULA MATERNITY</small></span></div><button className="icon-button drawer-close" aria-label="Close navigation" onClick={() => setMenuOpen(false)}><CloseIcon /></button></div><p className="sidecaption">SECURE DEMO WORKSPACE</p><nav aria-label="Primary navigation">{pages.map((item) => <button key={item} className={item === activePage ? "active" : ""} onClick={() => choosePage(item)}>{item}</button>)}</nav><button className="logout" onClick={logout}>Sign out</button><div className="bottom">Suva, Fiji · Synthetic data only</div></aside><main><header><div><small>CAREFIJI / {activePage.toUpperCase()}</small><h1>{activePage}</h1></div><div className="actions"><span>DEMO ONLY</span><b>{user.role}</b></div></header><section><Content page={activePage} data={data} user={user} act={act} audit={audit} />{status ? <p className="status-message" role="status">{status}</p> : null}<p className="status">Authenticated prototype · no real patient information permitted.<br />Copyright @ BASA</p></section></main></div>;
 }
