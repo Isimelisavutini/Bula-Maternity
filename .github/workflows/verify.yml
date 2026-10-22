@@ -1,0 +1,30 @@
+name: Verify
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install xcodegen
+      - run: xcodegen generate
+        working-directory: ios
+      - name: Build and test iOS 15-compatible target
+        run: xcodebuild -project CareFiji.xcodeproj -scheme CareFiji -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=latest,name=iPhone 16 Pro' test CODE_SIGNING_ALLOWED=NO
+        working-directory: ios

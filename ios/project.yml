@@ -1,0 +1,36 @@
+name: CareFiji
+options:
+  bundleIdPrefix: fj.gov.health
+  deploymentTarget:
+    iOS: "15.0"
+settings:
+  base:
+    SWIFT_VERSION: 5.9
+    DEVELOPMENT_TEAM: ""
+targets:
+  CareFiji:
+    type: application
+    platform: iOS
+    sources: [CareFiji]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: fj.gov.health.carefiji
+        INFOPLIST_FILE: CareFiji/Resources/Info.plist
+        TARGETED_DEVICE_FAMILY: "1,2"
+      configs:
+        Debug:
+          CAREFIJI_API_BASE_URL: https:/$()/example.invalid
+          SUPABASE_URL: https:/$()/example.supabase.co
+          SUPABASE_ANON_KEY: configure-in-local-xcconfig-or-ci
+        Release:
+          CAREFIJI_API_BASE_URL: https:/$()/example.invalid
+          SUPABASE_URL: https:/$()/example.supabase.co
+          SUPABASE_ANON_KEY: configure-in-release-settings
+    scheme:
+      testTargets: [CareFijiTests]
+  CareFijiTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [CareFijiTests]
+    dependencies:
+      - target: CareFiji
