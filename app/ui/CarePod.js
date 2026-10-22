@@ -349,7 +349,13 @@ function Conversation({ thread }) {
 
 export function AskMyMidwife({ data, act }) {
   const care = data.carePod;
+  const questionFlow = useRef(null);
+  const [openRequest, setOpenRequest] = useState(0);
   const [step, setStep] = useState("safety");
+  useEffect(() => {
+    questionFlow.current?.focus({ preventScroll: true });
+    questionFlow.current?.scrollIntoView({ block: "start" });
+  }, [step, openRequest]);
   const [flags, setFlags] = useState([]);
   const [category, setCategory] = useState("General");
   const [text, setText] = useState(() => {
@@ -448,8 +454,11 @@ export function AskMyMidwife({ data, act }) {
         care={care}
         onOpen={() => {
           setStep("safety");
+          setFlags([]);
           setSelected(null);
           setReplyTo(null);
+          setNotice("");
+          setOpenRequest((value) => value + 1);
         }}
       />
       <div className="care-knowledge">
@@ -480,6 +489,7 @@ export function AskMyMidwife({ data, act }) {
           </div>
         ) : null}
       </div>
+      <div ref={questionFlow} tabIndex={-1} className="care-question-flow" aria-label="Ask your midwife">
       {step === "safety" ? (
         <section className="care-panel">
           <h3>First, a quick safety check</h3>
@@ -589,6 +599,7 @@ export function AskMyMidwife({ data, act }) {
           </form>
         </section>
       ) : null}
+      </div>
       {notice ? (
         <p className="care-notice" role="status">
           {notice}
@@ -665,8 +676,15 @@ export function AskMyMidwife({ data, act }) {
 
 export function CarePodWorkspace({ data, user, act }) {
   const care = data.carePod;
+  const inbox = useRef(null);
+  const response = useRef(null);
   const [filter, setFilter] = useState("Open");
   const [selected, setSelected] = useState(null);
+  useEffect(() => {
+    const target = selected ? response.current : inbox.current;
+    target?.focus({ preventScroll: true });
+    target?.scrollIntoView({ block: "start" });
+  }, [selected]);
   const [reply, setReply] = useState("");
   const [audio, setAudio] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -708,7 +726,7 @@ export function CarePodWorkspace({ data, user, act }) {
       <div className="care-page-heading">
         <div>
           <small>CONTINUITY OF CARER</small>
-          <h2>Care pod workspace</h2>
+          <h2>Patient messages</h2>
           <p>Suva pod · shared coverage, clear handovers.</p>
         </div>
         <span className="care-demo-label">Synthetic demo</span>
@@ -831,8 +849,9 @@ export function CarePodWorkspace({ data, user, act }) {
         </details>
       ) : null}
       <div className="care-workspace">
-        <section className="care-panel care-inbox">
-          <h3>Shared in-tray</h3>
+        <section ref={inbox} tabIndex={-1} className="care-panel care-inbox" aria-label="Patient messages inbox">
+          <h3>Patient messages · shared inbox</h3>
+          <p>Select a patient conversation to read and reply. All on-duty pod midwives share this inbox.</p>
           <div className="care-chips">
             {["Open", "Attention", "Routine", "All"].map((item) => (
               <button
@@ -876,7 +895,7 @@ export function CarePodWorkspace({ data, user, act }) {
             <p>No conversations in this view.</p>
           )}
         </section>
-        <section className="care-panel care-response">
+        <section ref={response} tabIndex={-1} className="care-panel care-response" aria-label="Patient conversation">
           {thread ? (
             <>
               <h3>{thread.patientName}</h3>

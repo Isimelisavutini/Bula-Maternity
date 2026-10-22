@@ -448,3 +448,15 @@
     align-items: flex-start;
   }
 }
+.care-question-flow,
+.care-inbox,
+.care-response {
+  scroll-margin-top: 180px;
+}
+
+.care-question-flow:focus-visible,
+.care-inbox:focus-visible,
+.care-response:focus-visible {
+  outline: 3px solid var(--teal, #0aa6a6);
+  outline-offset: 4px;
+}

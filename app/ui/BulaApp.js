@@ -34,6 +34,8 @@ const iosDownloadUrl =
   "https://github.com/Isimelisavutini/Bula-Maternity/releases/latest";
 
 function TabIcon({ name }) {
+  if (name === "Patient Messages")
+    return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M21 11a8 8 0 0 1-8 8H7l-5 3V11a9 9 0 0 1 19 0Z" /><path d="M7 9h10M7 13h6" /></svg>;
   if (name === "Dashboard")
     return (
       <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -76,7 +78,7 @@ function TabIcon({ name }) {
 const navigation = {
   Administrator: [
     "Dashboard",
-    "Care Pod",
+    "Patient Messages",
     "Patients",
     "Appointments",
     "Clinical Care",
@@ -89,7 +91,7 @@ const navigation = {
   ],
   Doctor: [
     "Dashboard",
-    "Care Pod",
+    "Patient Messages",
     "Patients",
     "Appointments",
     "Clinical Care",
@@ -97,7 +99,7 @@ const navigation = {
   ],
   Midwife: [
     "Dashboard",
-    "Care Pod",
+    "Patient Messages",
     "Patients",
     "Appointments",
     "Clinical Care",
@@ -754,7 +756,7 @@ function Content({ page, data, user, act, audit, onNavigate }) {
   const role = user.role;
   if (page === "Dashboard") return <Dashboard data={data} user={user} act={act} onNavigate={onNavigate} />;
   if (page === "Ask My Midwife" && role === "Patient") return <AskMyMidwife data={data} act={act} />;
-  if (page === "Care Pod" && ["Administrator", "Doctor", "Midwife"].includes(role)) return <CarePodWorkspace data={data} user={user} act={act} />;
+  if (page === "Patient Messages" && ["Administrator", "Doctor", "Midwife"].includes(role)) return <CarePodWorkspace data={data} user={user} act={act} />;
   if (page === "Journey" && role === "Patient")
     return (
       <>
@@ -1078,6 +1080,8 @@ export default function BulaApp() {
   const mobileTabs = (
     user.role === "Patient"
       ? ["Dashboard", "Ask My Midwife", "Appointments", "Maternity Wards"]
+      : pages.includes("Patient Messages")
+      ? ["Dashboard", "Patient Messages", "Patients", "Appointments"]
       : ["Dashboard", "Patients", "Appointments", "Maternity Wards"]
   ).filter((item) => pages.includes(item));
   const initials = user.name
@@ -1205,13 +1209,15 @@ export default function BulaApp() {
         {mobileTabs.map((item) => {
           const active = item === activePage;
           const label =
-            item === "Ask My Midwife" ? "Midwife" : item === "Appointments"
+            item === "Patient Messages" ? "Messages" : item === "Ask My Midwife" ? "Midwife" : item === "Appointments"
               ? "Appts"
               : item === "Maternity Wards"
                 ? "Wards"
                 : item;
           const count =
-            item === "Patients"
+            item === "Patient Messages"
+              ? (data.carePod?.threads.filter((thread) => thread.status === "Open").length || 0)
+              : item === "Patients"
               ? data.patients.length
               : item === "Appointments"
                 ? data.appointments.length
