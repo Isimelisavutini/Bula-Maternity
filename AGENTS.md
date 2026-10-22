@@ -7,3 +7,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Repository delivery rule
+
+- After completing and validating requested repository changes, commit them and push them to GitHub unless the user explicitly says not to.
+- Treat GitHub as the source of truth for deployments.
+- Do not deploy directly to Vercel from this environment. Vercel deployments must be triggered through the repository's GitHub integration.
