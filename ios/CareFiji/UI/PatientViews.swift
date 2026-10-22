@@ -173,7 +173,7 @@ struct MenuView: View {
     @ObservedObject var model: AppModel
     @ObservedObject var sync: SyncCoordinator
     var body: some View {
-        NavigationView { List { Section("Synchronization") { LabeledContentCompat(label: "Connection", value: sync.isOnline ? "Online" : "Offline"); LabeledContentCompat(label: "Pending uploads", value: "\(sync.pendingCount)"); Button("Sync now") { Task { await sync.sync(reason: "menu-manual") } } }; Section("CareFiji") { Button("Replay startup splash") { model.showSplash = true }; Button("Sign out", role: .destructive) { model.signOut() } } }.navigationTitle("Menu") }.navigationViewStyle(.stack)
+        NavigationView { List { Section("Synchronization") { LabeledContentCompat(label: "Connection", value: sync.isOnline ? "Online" : "Offline"); LabeledContentCompat(label: "Pending uploads", value: "\(sync.pendingCount)"); Button("Sync now") { Task { await sync.sync(reason: "menu-manual") } } }; Section("CareFiji") { Button("Sign out", role: .destructive) { model.signOut() } } }.navigationTitle("Menu") }.navigationViewStyle(.stack)
     }
 }
 

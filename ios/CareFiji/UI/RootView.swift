@@ -7,7 +7,7 @@ struct RootView: View {
         ZStack {
             if model.isAuthenticated { PatientTabView(model: model, sync: model.sync) }
             else { SignInView(model: model) }
-            if model.showSplash { SplashView { model.showSplash = false }.transition(.opacity.combined(with: .scale(scale: 1.02))).zIndex(20) }
+            if model.showSplash { SplashView().transition(.opacity.combined(with: .scale(scale: 1.02))).zIndex(20) }
         }
         .animation(.easeOut(duration: 0.45), value: model.showSplash)
         .task {
@@ -18,12 +18,10 @@ struct RootView: View {
 }
 
 struct SplashView: View {
-    let dismiss: () -> Void
     var body: some View {
         ZStack {
             LinearGradient(colors: [CareColors.navy, CareColors.deepNavy], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
             VStack {
-                Label("MINISTRY OF HEALTH & MEDICAL SERVICES · FIJI", systemImage: "circle.fill").font(.caption2.bold()).tracking(1.8).foregroundColor(.mint).multilineTextAlignment(.center)
                 Spacer()
                 VStack(spacing: 16) {
                     Image(systemName: "cross.fill").font(.system(size: 46, weight: .black)).foregroundColor(.white).frame(width: 82, height: 82).background(CareColors.teal).clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)).shadow(color: CareColors.teal.opacity(0.55), radius: 28)
@@ -34,7 +32,7 @@ struct SplashView: View {
                 Spacer()
                 VStack(spacing: 14) {
                     ProgressView().progressViewStyle(.linear).tint(.mint)
-                    HStack { Label("Suva Secure Gateway", systemImage: "checkmark.shield"); Spacer(); Button("Skip Intro →", action: dismiss).buttonStyle(.bordered).tint(.white) }.font(.caption).foregroundColor(.white.opacity(0.75))
+                    Label("Suva Secure Gateway", systemImage: "checkmark.shield").font(.caption).foregroundColor(.white.opacity(0.75))
                 }
             }.padding(28)
         }

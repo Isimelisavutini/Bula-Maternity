@@ -163,10 +163,6 @@ function SplashScreen({ onDone }) {
       window.clearTimeout(doneTimer);
     };
   }, [onDone]);
-  function skip() {
-    setLeaving(true);
-    window.setTimeout(onDone, 450);
-  }
   return (
     <div
       className={`startup-splash ${leaving ? "splash-leaving" : ""}`}
@@ -174,10 +170,6 @@ function SplashScreen({ onDone }) {
       aria-modal="true"
       aria-label="CareFiji introduction"
     >
-      <div className="splash-ministry">
-        <span />
-        Ministry of Health & Medical Services · Fiji
-      </div>
       <div className="splash-brand">
         <div className="splash-mark">✚</div>
         <h1>CareFiji</h1>
@@ -190,7 +182,6 @@ function SplashScreen({ onDone }) {
         </div>
         <div>
           <span>◈ Suva Secure Gateway</span>
-          <button onClick={skip}>Skip Intro →</button>
         </div>
       </div>
     </div>
@@ -880,16 +871,7 @@ export default function BulaApp() {
   const [showSplash, setShowSplash] = useState(true);
   const dismissSplash = useCallback(() => setShowSplash(false), []);
   const splashControls = (
-    <>
-      {showSplash ? <SplashScreen onDone={dismissSplash} /> : null}
-      <button
-        className="splash-replay"
-        onClick={() => setShowSplash(true)}
-        aria-label="Replay startup splash"
-      >
-        ↻ Splash
-      </button>
-    </>
+    <>{showSplash ? <SplashScreen onDone={dismissSplash} /> : null}</>
   );
 
   useEffect(() => {
