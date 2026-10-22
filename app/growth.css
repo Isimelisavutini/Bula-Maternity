@@ -8,8 +8,6 @@
 }
 
 .growth-card {
-  display: grid;
-  grid-template-columns: minmax(250px, 0.9fr) minmax(0, 1.1fr);
   overflow: hidden;
   margin-bottom: 16px;
   border: 1px solid var(--line);
@@ -18,38 +16,27 @@
   box-shadow: var(--shadow);
 }
 
-.growth-image {
-  position: relative;
-  min-height: 330px;
-  background: #eed0c4;
-}
-
-.growth-image img {
+.day-card-image {
+  z-index: 0;
   object-fit: cover;
+  object-position: center 44%;
+  transition: opacity 0.35s ease;
 }
 
-.growth-image::after {
-  content: "";
+.day-card-image-overlay {
   position: absolute;
-  inset: auto 0 0;
-  height: 38%;
-  background: linear-gradient(transparent, rgba(26, 32, 44, 0.48));
-  pointer-events: none;
+  z-index: 0;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(5, 84, 88, 0.98) 0%,
+    rgba(5, 96, 97, 0.9) 46%,
+    rgba(7, 75, 79, 0.52) 100%
+  );
 }
 
-.growth-image > span {
-  position: absolute;
-  z-index: 1;
-  left: 16px;
-  bottom: 15px;
-  padding: 6px 11px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 99px;
-  background: rgba(13, 122, 115, 0.88);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 850;
-  letter-spacing: 0.5px;
+.day-card.has-growth-image .day-rings {
+  opacity: 0.42;
 }
 
 .growth-copy {
@@ -126,12 +113,7 @@
 
 @media (max-width: 800px) {
   .growth-card {
-    grid-template-columns: 1fr;
     border-radius: 20px;
-  }
-
-  .growth-image {
-    min-height: clamp(250px, 78vw, 390px);
   }
 
   .growth-copy {
@@ -140,6 +122,19 @@
 
   .growth-copy h3 {
     font-size: 20px;
+  }
+
+  .day-card-image {
+    object-position: 58% center;
+  }
+
+  .day-card-image-overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(5, 84, 88, 0.98) 0%,
+      rgba(5, 96, 97, 0.89) 62%,
+      rgba(7, 75, 79, 0.55) 100%
+    );
   }
 
   .week-jumps {

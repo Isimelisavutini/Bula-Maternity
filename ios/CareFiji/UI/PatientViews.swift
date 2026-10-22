@@ -79,7 +79,15 @@ struct PregnancyDayCard: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             LinearGradient(colors: [CareColors.darkTeal, CareColors.teal], startPoint: .topLeading, endPoint: .bottomTrailing)
-            Circle().stroke(Color.white.opacity(0.07), lineWidth: 18).frame(width: 210, height: 210).offset(x: 65, y: -65)
+            if week == 4 {
+                Image(decorative: "Week04")
+                    .resizable()
+                    .scaledToFill()
+                    .transition(.opacity)
+                LinearGradient(colors: [CareColors.darkTeal.opacity(0.97), CareColors.darkTeal.opacity(0.76), CareColors.navy.opacity(0.34)], startPoint: .leading, endPoint: .trailing)
+            } else {
+                Circle().stroke(Color.white.opacity(0.07), lineWidth: 18).frame(width: 210, height: 210).offset(x: 65, y: -65)
+            }
             VStack(alignment: .leading, spacing: 12) {
                 HStack { Text("✦ PREGNANCY TIMELINE · DAY STATUS").font(.caption2.bold()).tracking(1); Spacer(); Text("Trimester \(week <= 13 ? 1 : week <= 27 ? 2 : 3)").font(.caption2.bold()).padding(6).background(Color.white.opacity(0.15)).clipShape(Capsule()) }
                 HStack(alignment: .firstTextBaseline, spacing: 6) { Text("Day \(day)").font(.system(size: 38, weight: .black, design: .rounded)); Text("of 280 days").font(.subheadline.bold()) }
@@ -92,7 +100,7 @@ struct PregnancyDayCard: View {
                     Button(action: logKick) { Label("Log Kick \(kicks)", systemImage: "heart.fill") }.buttonStyle(.bordered).tint(.white).accessibilityHint("Records one baby kick and uploads it when a connection is available")
                 }
             }.padding(20).foregroundColor(.white)
-        }.clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)).shadow(color: CareColors.darkTeal.opacity(0.2), radius: 18, y: 10)
+        }.clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)).shadow(color: CareColors.darkTeal.opacity(0.2), radius: 18, y: 10).animation(.easeInOut(duration: 0.3), value: week)
     }
 }
 
@@ -106,13 +114,6 @@ struct WeekFourGrowthCard: View {
     var body: some View {
         CareCard {
             VStack(alignment: .leading, spacing: 14) {
-                Image("Week04")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 220)
-                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    .accessibilityLabel("Medical illustration of early embryonic development within the gestational sac")
                 Text("YOUR BABY THIS WEEK").font(.caption2.bold()).tracking(1.4).foregroundColor(CareColors.darkTeal)
                 Text("Week 4: Early Implantation & Embryonic Disc").font(.title3.bold()).foregroundColor(CareColors.navy)
                 VStack(alignment: .leading, spacing: 3) {

@@ -175,16 +175,6 @@ function GrowthCard({ week }) {
 
   return (
     <article className="growth-card" aria-labelledby={`growth-week-${week}`}>
-      <div className="growth-image">
-        <Image
-          src={growth.image}
-          alt={growth.alt}
-          fill
-          sizes="(max-width: 800px) 100vw, 330px"
-          priority={week === 4}
-        />
-        <span>Week {week}</span>
-      </div>
       <div className="growth-copy">
         <small>YOUR BABY THIS WEEK</small>
         <h3 id={`growth-week-${week}`}>
@@ -256,6 +246,7 @@ function PatientDashboard({ compact = false }) {
     week === 4
       ? "Implantation is established and early support structures are forming."
       : "Baby’s senses are active!";
+  const growth = pregnancyGrowth[week];
   function logKick() {
     setKicks((value) => value + 1);
     setHeartId((value) => value + 1);
@@ -292,7 +283,21 @@ function PatientDashboard({ compact = false }) {
           W{week} D{days % 7 || 7}
         </button>
       </div>
-      <article className="day-card">
+      <article className={`day-card ${growth ? "has-growth-image" : ""}`}>
+        {growth ? (
+          <>
+            <Image
+              className="day-card-image"
+              src={growth.image}
+              alt=""
+              fill
+              sizes="(max-width: 800px) 100vw, 820px"
+              priority={week === 4}
+              aria-hidden="true"
+            />
+            <div className="day-card-image-overlay" />
+          </>
+        ) : null}
         <div className="day-rings" />
         <div className="day-meta">
           <span>✦ PREGNANCY TIMELINE · DAY STATUS</span>
