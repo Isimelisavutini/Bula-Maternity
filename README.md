@@ -1,34 +1,63 @@
 # CareFiji — Bula Maternity
 
-A Pacific-inspired digital maternity hospital management prototype for Fiji.
+A Pacific-inspired maternity hospital workflow prototype for Fiji, now implemented as a Next.js application for Vercel.
 
-## Prototype capabilities
+> **Synthetic demonstration data only.** This application is not approved for real patient information, clinical decisions, or production healthcare use.
 
-- Charming-authenticated identity
-- Server-enforced role permissions for Administrator, Doctor, Midwife, Receptionist, Finance, and Patient roles
-- Synthetic patient registry and appointments
-- Validated appointment status transitions
-- Draft → Reviewed clinical note workflow
-- Maternity ward board
-- Billing workflow
-- Application audit events
-- Pacific Reef responsive UI
-- Copyright @ BASA
+## What changed
 
-## Important safety notice
+- Next.js App Router provides the web entry point and Vercel serverless API routes.
+- Signed, HTTP-only cookies replace Charming identity for six seeded demonstration users.
+- Server-side role permissions protect every read and mutation.
+- Upstash Redis provides shared durable state and audit-event storage.
+- The original Pacific Reef responsive interface is implemented in React.
 
-**Synthetic demonstration data only.** This repository and the deployed prototype are not approved for real patient information, clinical decision-making, or production healthcare use.
+## Local development
 
-Before any real-world clinical deployment, independent security testing, privacy and regulatory review, clinical governance, backup/disaster-recovery controls, production infrastructure validation, retention policies, and tamper-evident audit logging would be required.
+Requires Node.js 20.9 or newer.
 
-## Source layout
+```bash
+npm install
+npm run dev
+```
 
-- `src/backend.js` — Charming manifest, server-side RBAC, persistence, validation, audit and clinical workflow routes.
-- `src/ui.js` — browser UI and workflow interactions.
-- `src/styles.css` — Pacific Reef design system and responsive styling.
+Without Redis variables, local development uses in-memory data that resets when the server restarts. Set the variables from `.env.example` to test durable storage locally.
 
-## Deployment
+Run the quality checks with:
 
-Current prototype platform: Charming.
+```bash
+npm test
+npm run lint
+npm run build
+```
+
+## Deploying to Vercel
+
+1. Import this GitHub repository into Vercel. Framework detection should select Next.js automatically.
+2. In the Vercel project, open **Storage / Marketplace** and create or connect an Upstash Redis database.
+3. Confirm the integration provides `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` to the project.
+4. Add `SESSION_SECRET` in project environment variables. Generate a long random value; do not commit it.
+5. Redeploy the project.
+
+No build or output-directory override is needed. The production build command is `npm run build`.
+
+## Demonstration identities
+
+The sign-in screen supplies the corresponding password when a role is selected. The accounts are intentionally public demo identities and must not be treated as production authentication.
+
+| Username | Role |
+| --- | --- |
+| `admin` | Administrator |
+| `doctor` | Doctor |
+| `midwife` | Midwife |
+| `reception` | Receptionist |
+| `finance` | Finance |
+| `patient` | Patient |
+
+## Production limitations
+
+Before real-world clinical use, replace the demo identity flow with a managed identity provider and verified staff/patient accounts. Independent security testing, privacy and regulatory review, clinical governance, backups and disaster recovery, retention policies, tamper-evident audit logging, and validated infrastructure are also required.
+
+The former Charming implementation remains in `src/` as migration reference and is not included in the Next.js runtime.
 
 Copyright @ BASA
