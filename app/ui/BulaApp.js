@@ -123,6 +123,7 @@ function Login({ onLogin }) {
           <button disabled={busy}>{busy ? "Signing in…" : "Enter secure demo"}</button>
         </form>
         {error ? <p className="error" role="alert">{error}</p> : null}
+        <p><a href="/patient">Open the production patient portal</a></p>
       </section>
     </main>
   );
