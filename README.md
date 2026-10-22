@@ -39,7 +39,7 @@ npm run build
 4. Add `SESSION_SECRET` in project environment variables. Generate a long random value; do not commit it.
 5. Redeploy the project.
 
-No build or output-directory override is needed. The production build command is `npm run build`.
+The checked-in `vercel.json` selects the Next.js framework and reproducible `npm ci` / `npm run build` commands. In Vercel project settings, leave **Root Directory** at the repository root and clear any legacy **Output Directory** override left from the former static prototype.
 
 ## Demonstration identities
 
