@@ -17,7 +17,7 @@ builder.Services.AddApplicationInsightsTelemetry(options =>
     options.EnableRequestTrackingTelemetryModule = false;
     options.EnableDependencyTrackingTelemetryModule = false;
 });
-builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 64 * 1024);
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 384 * 1024);
 var app = builder.Build();
 
 app.Use(async (context, next) =>

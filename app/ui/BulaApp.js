@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import BrandLogo from "./BrandLogo";
-import { useCallback, useEffect, useState } from "react";
+import { AskMyMidwife, CarePodWorkspace, MyMidwifeCard } from "./CarePod";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function MenuIcon() {
   return (
@@ -63,7 +64,7 @@ function TabIcon({ name }) {
         <path d="M3 7v11M21 18v-7a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v7M3 14h18M7 9V7a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v2" />
       </svg>
     );
-  if (name === "Journey")
+  if (name === "Journey" || name === "Ask My Midwife")
     return (
       <svg aria-hidden="true" viewBox="0 0 24 24">
         <path d="M12 21s-7-4.35-7-11a4 4 0 0 1 7-2.65A4 4 0 0 1 19 10c0 6.65-7 11-7 11Z" />
@@ -75,6 +76,7 @@ function TabIcon({ name }) {
 const navigation = {
   Administrator: [
     "Dashboard",
+    "Care Pod",
     "Patients",
     "Appointments",
     "Clinical Care",
@@ -87,6 +89,7 @@ const navigation = {
   ],
   Doctor: [
     "Dashboard",
+    "Care Pod",
     "Patients",
     "Appointments",
     "Clinical Care",
@@ -94,6 +97,7 @@ const navigation = {
   ],
   Midwife: [
     "Dashboard",
+    "Care Pod",
     "Patients",
     "Appointments",
     "Clinical Care",
@@ -107,7 +111,7 @@ const navigation = {
     "Billing",
   ],
   Finance: ["Dashboard", "Billing", "Reports"],
-  Patient: ["Dashboard", "Journey", "Appointments", "Maternity Wards"],
+  Patient: ["Dashboard", "Ask My Midwife", "Journey", "Appointments", "Maternity Wards"],
 };
 
 const milestones = [
@@ -252,7 +256,7 @@ function SplashScreen({ onDone }) {
   );
 }
 
-function PatientDashboard({ compact = false }) {
+function PatientDashboard({ compact = false, care, onAsk }) {
   const [week, setWeek] = useState(26);
   const [kicks, setKicks] = useState(12);
   const [heartId, setHeartId] = useState(0);
@@ -338,6 +342,7 @@ function PatientDashboard({ compact = false }) {
           </div>
         </div>
       </article>
+      <MyMidwifeCard care={care} onOpen={onAsk} />
       <GrowthCard week={week} />
       <article className="gestation-card">
         <div className="dual-accent">
@@ -451,6 +456,8 @@ function Login({ onLogin }) {
     admin: "bula-admin",
     doctor: "bula-doctor",
     midwife: "bula-midwife",
+    kesa: "bula-kesa",
+    litia: "bula-litia",
     reception: "bula-reception",
     finance: "bula-finance",
     patient: "bula-patient",
@@ -516,6 +523,8 @@ function Login({ onLogin }) {
               <option value="admin">Administrator</option>
               <option value="doctor">Doctor</option>
               <option value="midwife">Midwife</option>
+              <option value="kesa">Sister Kesa · Pod buddy</option>
+              <option value="litia">Sister Litia · Pod buddy</option>
               <option value="reception">Receptionist</option>
               <option value="finance">Finance</option>
               <option value="patient">Patient</option>
@@ -574,8 +583,9 @@ function DataTable({ headers, rows }) {
   );
 }
 
-function Dashboard({ data, user }) {
-  if (user.role === "Patient") return <PatientDashboard />;
+function Dashboard({ data, user, act, onNavigate }) {
+  if (user.role === "Patient") return <PatientDashboard care={data.carePod} onAsk={() => onNavigate("Ask My Midwife")} />;
+  if (user.role === "Midwife") return <CarePodWorkspace data={data} user={user} act={act} />;
   return (
     <>
       <div className="hero">
@@ -740,14 +750,16 @@ function ClinicalCare({ data, role, act }) {
   );
 }
 
-function Content({ page, data, user, act, audit }) {
+function Content({ page, data, user, act, audit, onNavigate }) {
   const role = user.role;
-  if (page === "Dashboard") return <Dashboard data={data} user={user} />;
+  if (page === "Dashboard") return <Dashboard data={data} user={user} act={act} onNavigate={onNavigate} />;
+  if (page === "Ask My Midwife" && role === "Patient") return <AskMyMidwife data={data} act={act} />;
+  if (page === "Care Pod" && ["Administrator", "Doctor", "Midwife"].includes(role)) return <CarePodWorkspace data={data} user={user} act={act} />;
   if (page === "Journey" && role === "Patient")
     return (
       <>
         <h2 className="journey-title">My Pregnancy Journey</h2>
-        <PatientDashboard />
+        <PatientDashboard care={data.carePod} onAsk={() => onNavigate("Ask My Midwife")} />
       </>
     );
   if (page === "Patients")
@@ -942,6 +954,7 @@ function Content({ page, data, user, act, audit }) {
 }
 
 export default function BulaApp() {
+  const dataGeneration = useRef(0);
   const [user, setUser] = useState(null);
   const [data, setData] = useState(null);
   const [page, setPage] = useState("Dashboard");
@@ -983,6 +996,23 @@ export default function BulaApp() {
         .catch((error) => setStatus(error.message));
   }, [page, user?.role]);
   useEffect(() => {
+    if (!user || !["Patient", "Administrator", "Doctor", "Midwife"].includes(user.role)) return undefined;
+    let active = true;
+    let pending = false;
+    async function refresh() {
+      if (document.visibilityState !== "visible" || pending) return;
+      pending = true;
+      const generation = dataGeneration.current;
+      try { const result = await api("data"); if (active && generation === dataGeneration.current) setData(result.data); }
+      catch { /* Preserve the last snapshot when offline; refresh never submits data. */ }
+      finally { pending = false; }
+    }
+    const timer = window.setInterval(refresh, 15000);
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("online", refresh);
+    return () => { active = false; window.clearInterval(timer); document.removeEventListener("visibilitychange", refresh); window.removeEventListener("online", refresh); };
+  }, [user]);
+  useEffect(() => {
     if (!menuOpen) return undefined;
     const closeOnEscape = (event) => {
       if (event.key === "Escape") setMenuOpen(false);
@@ -996,16 +1026,21 @@ export default function BulaApp() {
   }, [menuOpen]);
 
   async function act(action, payload) {
+    dataGeneration.current++;
     setStatus("");
     try {
       const result = await api("action", {
         method: "POST",
         body: JSON.stringify({ action, payload }),
       });
+      dataGeneration.current++;
       setData(result.data);
       setStatus("Saved and recorded in the audit log.");
+      return true;
     } catch (error) {
+      dataGeneration.current++;
       setStatus(`Action rejected: ${error.message}`);
+      return false;
     }
   }
 
@@ -1042,7 +1077,7 @@ export default function BulaApp() {
   const activePage = pages.includes(page) ? page : "Dashboard";
   const mobileTabs = (
     user.role === "Patient"
-      ? ["Dashboard", "Journey", "Appointments", "Maternity Wards"]
+      ? ["Dashboard", "Ask My Midwife", "Appointments", "Maternity Wards"]
       : ["Dashboard", "Patients", "Appointments", "Maternity Wards"]
   ).filter((item) => pages.includes(item));
   const initials = user.name
@@ -1152,6 +1187,7 @@ export default function BulaApp() {
             user={user}
             act={act}
             audit={audit}
+            onNavigate={choosePage}
           />
           {status ? (
             <p className="status-message" role="status">
@@ -1169,7 +1205,7 @@ export default function BulaApp() {
         {mobileTabs.map((item) => {
           const active = item === activePage;
           const label =
-            item === "Appointments"
+            item === "Ask My Midwife" ? "Midwife" : item === "Appointments"
               ? "Appts"
               : item === "Maternity Wards"
                 ? "Wards"

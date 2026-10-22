@@ -1,0 +1,15 @@
+{
+  "midwives": [
+    { "id": "demo-midwife", "name": "Sister Mere", "initials": "MR", "image": "/care-pod/mere.png", "credentials": "Demo midwife · Suva clinic", "clinicDays": "Monday, Wednesday, Friday", "status": "On Duty", "welcome": "Bula mama, I’m Sister Mere. I’ll be walking this journey with you. Your care pod is here to listen." },
+    { "id": "demo-kesa", "name": "Sister Kesa", "initials": "KS", "image": "/care-pod/kesa.png", "credentials": "Demo midwife · Ward buddy", "clinicDays": "Tuesday, Thursday", "status": "On Duty", "welcome": "Bula mama, I’m Sister Kesa. I’m part of your care pod and can help when Sister Mere is away." },
+    { "id": "demo-litia", "name": "Sister Litia", "initials": "LN", "image": "/care-pod/litia.png", "credentials": "Demo midwife · Clinic buddy", "clinicDays": "Monday, Thursday", "status": "Off Duty", "welcome": "Bula mama, I’m Sister Litia. We’ll support you through each step of your pregnancy." }
+  ],
+  "pods": [{ "id": "suva-pod", "name": "Suva care pod", "clinic": "CWM Suva Clinic", "zone": "Suva", "midwifeIds": ["demo-midwife", "demo-kesa", "demo-litia"] }],
+  "assignments": [
+    { "patientId": "CF1001", "podId": "suva-pod", "primaryId": "demo-midwife" },
+    { "patientId": "CF1002", "podId": "suva-pod", "primaryId": "demo-kesa" },
+    { "patientId": "CF1003", "podId": "suva-pod", "primaryId": "demo-litia" }
+  ],
+  "threads": [],
+  "alerts": []
+}

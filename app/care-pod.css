@@ -1,0 +1,450 @@
+.care-page {
+  max-width: 1120px;
+  margin: auto;
+}
+.care-page h2 {
+  margin: 3px 0;
+  font-size: clamp(26px, 3vw, 36px);
+}
+.care-page-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.care-page-heading small,
+.care-welcome small {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #0d7a73;
+  font-weight: 800;
+}
+.care-page-heading p {
+  color: var(--muted);
+  margin: 6px 0;
+}
+.care-demo-label {
+  white-space: nowrap;
+  padding: 6px 10px;
+  border-radius: 99px;
+  color: #96511b;
+  background: #fff0e4;
+  font-size: 10px;
+  font-weight: 750;
+}
+.care-welcome,
+.care-panel,
+.care-knowledge {
+  margin: 18px 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+.care-panel {
+  max-width: none;
+}
+.care-panel h3,
+.care-knowledge h3,
+.care-welcome h3 {
+  margin: 0 0 8px;
+}
+.care-welcome-main {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.care-welcome-main h3 {
+  font-size: 19px;
+  margin: 3px 0;
+}
+.care-welcome-main p {
+  margin: 2px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.care-avatar {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ecf5f1;
+}
+.care-welcome .care-coverage {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #315f60;
+}
+.care-online,
+.care-offline {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #1a9b69;
+}
+.care-offline {
+  background: #81908e;
+}
+.care-inline-actions,
+.care-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.care-inline-actions {
+  margin: 12px 0;
+}
+.care-page button,
+.care-welcome button {
+  min-height: 44px;
+}
+.care-secondary {
+  border: 1px solid var(--line);
+  background: #f6faf8;
+  color: #0d7a73;
+  box-shadow: none;
+}
+.care-secondary:hover {
+  color: white;
+}
+.care-emergency {
+  position: sticky;
+  z-index: 12;
+  top: 112px;
+  padding: 12px 18px;
+  border: 1px solid #f0c5bc;
+  border-left: 5px solid #b73535;
+  border-radius: 14px;
+  background: #fff5f1;
+  color: #8e2828;
+}
+.care-emergency summary {
+  min-height: 44px;
+  padding: 10px 0;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.care-emergency summary:focus-visible {
+  outline: 3px solid #0d7a73;
+  outline-offset: 3px;
+}
+.care-emergency p {
+  margin: 4px 0;
+  font-size: 12px;
+}
+.care-emergency .care-inline-actions {
+  margin-bottom: 0;
+}
+.care-emergency a {
+  color: #8e2828;
+  font-size: 12px;
+  text-underline-offset: 3px;
+}
+.care-emergency span {
+  max-width: 440px;
+  font-size: 11px;
+}
+.care-emergency .care-call {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: #a72d2d;
+  color: white;
+  font-weight: 750;
+  text-decoration: none;
+}
+.care-guidance {
+  padding: 16px;
+  margin-top: 16px;
+  background: #f3f9f6;
+  border-radius: 12px;
+  color: #315f60;
+}
+.care-guidance p {
+  margin: 7px 0;
+  line-height: 1.65;
+}
+.care-guidance h4 {
+  margin: 0;
+}
+.care-guidance small {
+  font-size: 11px;
+  color: #667b7c;
+}
+.care-check {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  padding: 11px 0;
+  font-weight: 500;
+  min-height: 44px;
+}
+.care-check input {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  accent-color: #0d7a73;
+}
+.care-panel fieldset {
+  padding: 0;
+  margin: 16px 0;
+  border: 0;
+}
+.care-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.care-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  gap: 16px;
+}
+.care-form label,
+.care-roster label,
+.care-booking label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 750;
+}
+.care-form textarea,
+.care-form select,
+.care-roster select,
+.care-booking input {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink);
+  background: white;
+}
+.care-form small {
+  color: var(--muted);
+}
+.care-recorder {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.care-recorder p,
+.care-recorder span {
+  width: 100%;
+  font-size: 12px;
+}
+.care-recording {
+  background: #a72d2d;
+}
+.care-recorder audio,
+.care-message audio {
+  max-width: 100%;
+  height: 40px;
+}
+.care-notice {
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  background: #f5faf8;
+  border-radius: 12px;
+  color: #436967;
+  font-size: 12px;
+}
+.care-thread-list {
+  display: grid;
+  gap: 8px;
+}
+.care-thread {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  text-align: left;
+  margin: 10px 0;
+  padding: 15px;
+  border: 1px solid #cbdfe8;
+  border-left: 4px solid #4287a3;
+  border-radius: 12px;
+  background: #f6fafc;
+  color: var(--ink);
+  box-shadow: none;
+}
+.care-thread:hover,
+.care-thread.care-selected {
+  background: #eaf5f3;
+  color: var(--ink);
+  border-color: #0d7a73;
+}
+.care-thread span,
+.care-thread small {
+  font-size: 11px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.care-attention {
+  border-left-color: #d08b25;
+  background: #fffaf0;
+}
+.care-conversation {
+  display: grid;
+  gap: 12px;
+  padding: 16px 0;
+}
+.care-message {
+  max-width: 94%;
+  padding: 15px;
+  background: #eef6f3;
+  border: 1px solid #d7e9e4;
+  border-radius: 13px;
+}
+.care-message.care-from-patient {
+  margin-left: auto;
+  background: #faf8f5;
+  border-color: #e6e2dc;
+}
+.care-message > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 11px;
+}
+.care-message time {
+  color: var(--muted);
+}
+.care-message p {
+  margin-bottom: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.care-roster {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+.care-roster-card {
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 18px;
+}
+.care-roster-card h3 {
+  font-size: 17px;
+  margin: 12px 0 4px;
+}
+.care-roster-card p {
+  color: var(--muted);
+  font-size: 11px;
+  margin: 5px 0 12px;
+}
+.care-alert-queue {
+  max-width: none;
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #efc0b8;
+  border-radius: 18px;
+  background: #fff5f1;
+}
+.care-alert-queue article {
+  padding: 15px 0;
+  border-top: 1px solid #efc0b8;
+}
+.care-alert-queue button {
+  display: block;
+  margin-top: 12px;
+  background: #a72d2d;
+}
+.care-alert-queue p {
+  font-size: 12px;
+}
+.care-panel summary {
+  font-weight: 750;
+  cursor: pointer;
+  min-height: 32px;
+}
+.care-panel[open] summary {
+  margin-bottom: 15px;
+}
+.care-workspace {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.4fr);
+  gap: 18px;
+  align-items: start;
+}
+.care-workspace > section {
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+}
+.care-inbox .care-chips button {
+  padding: 8px 10px;
+  font-size: 11px;
+}
+.care-empty {
+  padding: 55px 10px;
+  color: var(--muted);
+}
+.care-booking {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+@media (max-width: 1000px) {
+  .care-roster {
+    grid-template-columns: 1fr;
+  }
+  .care-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 800px) {
+  .shell main:has(.care-page) > header {
+    display: none;
+  }
+  .care-emergency {
+    top: calc(104px + env(safe-area-inset-top));
+  }
+  .care-welcome,
+  .care-panel,
+  .care-knowledge {
+    padding: 18px;
+  }
+  .care-page-heading {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .care-message {
+    max-width: 100%;
+  }
+  .care-inline-actions > button {
+    flex: 1 1 auto;
+  }
+  .care-form textarea {
+    font-size: 16px;
+  }
+  .care-welcome-main {
+    align-items: flex-start;
+  }
+}

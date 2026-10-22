@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { applyAction, demoUsers, requirePermission, viewForRole } from "../../../lib/domain";
 import { clearSession, createSession, readSession } from "../../../lib/session";
-import { readData, writeData } from "../../../lib/store";
+import { readData, transactData } from "../../../lib/store";
 
 export const runtime = "nodejs";
 
@@ -14,6 +14,7 @@ function errorStatus(message) {
   if (message.startsWith("PERMISSION_DENIED")) return 403;
   if (["VALIDATION_FAILED", "INVALID_TRANSITION", "DRAFT_REQUIRED", "UNKNOWN_ACTION"].includes(message)) return 400;
   if (message === "NOT_FOUND") return 404;
+  if (message === "TEMPORARY_UNAVAILABLE") return 503;
   return 500;
 }
 
@@ -54,19 +55,16 @@ async function handlePost(operation, request) {
   if (operation === "action") {
     const user = await userRequired();
     const { action, payload = {} } = await request.json();
-    const data = await readData();
-    try {
-      const { next, target } = applyAction(data, user, action, payload);
-      next.audit.push({ id: crypto.randomUUID(), at: new Date().toISOString(), actor: user.id, actorName: user.name, role: user.role, action, target, outcome: "success" });
-      next.audit = next.audit.slice(-1000);
-      await writeData(next);
-      return response({ data: viewForRole(next, user.role) });
-    } catch (error) {
-      data.audit.push({ id: crypto.randomUUID(), at: new Date().toISOString(), actor: user.id, actorName: user.name, role: user.role, action, target: "unknown", outcome: `rejected:${error.message}` });
-      data.audit = data.audit.slice(-1000);
-      await writeData(data);
-      throw error;
-    }
+    const result = await transactData(data => {
+      let next = data; let target = "unknown"; let error = null;
+      try { ({ next, target } = applyAction(data, user, action, payload)); }
+      catch (failure) { error = failure.message; }
+      next.audit.push({ id: crypto.randomUUID(), at: new Date().toISOString(), actor: user.id, actorName: user.name, role: user.role, action, target, outcome: error ? `rejected:${error}` : "success" });
+      next.audit = next.audit.slice(-1000); next._revision = (data._revision || 0) + 1;
+      return { data: next, error };
+    });
+    if (result.error) throw new Error(result.error);
+    return response({ data: viewForRole(result.data, user.role) });
   }
   return response({ error: "NOT_FOUND" }, 404);
 }

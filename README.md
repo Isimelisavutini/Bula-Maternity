@@ -8,7 +8,7 @@ A Pacific-inspired maternity hospital workflow prototype for Fiji, with a Next.j
 
 - Next.js App Router provides the web entry point; a server-only `BACKEND_API_URL` rewrite sends API requests to C# on Azure.
 - The C# backend ports demo workflows and patient/iOS sync APIs without changing their client contracts. Temporary JavaScript handlers remain available until the Azure cutover is verified.
-- Signed, HTTP-only cookies replace Charming identity for six seeded demonstration users.
+- Signed, HTTP-only cookies replace Charming identity for demonstration identities across six roles, including three care-pod midwives.
 - Server-side role permissions protect every read and mutation.
 - Upstash Redis provides shared synthetic-demo state and audit storage; C# uses atomic version-checked writes. Supabase Auth/Postgres remain separate for production patients.
 - The original Pacific Reef responsive interface is implemented in React.
@@ -53,9 +53,15 @@ The sign-in screen supplies the corresponding password when a role is selected. 
 | `admin` | Administrator |
 | `doctor` | Doctor |
 | `midwife` | Midwife |
+| `kesa` | Midwife · pod buddy |
+| `litia` | Midwife · pod buddy |
 | `reception` | Receptionist |
 | `finance` | Finance |
 | `patient` | Patient |
+
+## Care-pod communication prototype
+
+The synthetic workspace includes “Ask My Midwife” for patients and a shared care-pod queue for midwives, doctors, and administrators. It supports safety checks, buddy coverage, questions and voice notes, replies, appointment requests, and alert acknowledgement. See [care-pod workflow and limits](docs/care-pod.md). These screens use the isolated demo data plane; they are not connected to a live staffed triage service or the production Supabase patient portal.
 
 ## Production limitations
 

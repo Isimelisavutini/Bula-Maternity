@@ -15,6 +15,8 @@ public static class DemoDomain
         ["admin"] = new(new("demo-admin", "Demo Administrator", "Administrator"), "bula-admin"),
         ["doctor"] = new(new("demo-doctor", "Dr A. Kumar", "Doctor"), "bula-doctor"),
         ["midwife"] = new(new("demo-midwife", "Nurse M. Ratu", "Midwife"), "bula-midwife"),
+        ["kesa"] = new(new("demo-kesa", "Sister Kesa", "Midwife"), "bula-kesa"),
+        ["litia"] = new(new("demo-litia", "Sister Litia", "Midwife"), "bula-litia"),
         ["reception"] = new(new("demo-reception", "Demo Receptionist", "Receptionist"), "bula-reception"),
         ["finance"] = new(new("demo-finance", "Demo Finance", "Finance"), "bula-finance"),
         ["patient"] = new(new("demo-patient", "Mereani Sovaki", "Patient"), "bula-patient")
@@ -57,6 +59,7 @@ public static class DemoDomain
         var view = data.DeepClone().AsObject();
         view.Remove("audit");
         view.Remove("_revision");
+        view["carePod"] = CarePodDomain.View(data, role);
         if (role == "Patient")
         {
             view["patients"] = new JsonArray(view["patients"]!.AsArray().Where(p => Text(p, "id") == "CF1001").Select(p => p!.DeepClone()).ToArray());
@@ -74,6 +77,7 @@ public static class DemoDomain
 
     public static string Apply(JsonObject data, DemoUser user, string action, JsonObject payload, DateTimeOffset now)
     {
+        if (CarePodDomain.Actions.Contains(action)) return CarePodDomain.Apply(data, user, action, payload, now);
         var permission = action switch
         {
             "addPatient" => "patient.add", "addAppointment" => "appointment.add",

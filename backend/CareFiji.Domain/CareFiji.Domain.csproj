@@ -5,4 +5,7 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="../../shared/care-pod.json" Link="care-pod.json" LogicalName="CareFiji.care-pod.json" />
+  </ItemGroup>
 </Project>
