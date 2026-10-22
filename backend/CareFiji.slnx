@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="CareFiji.Domain/CareFiji.Domain.csproj" />
+  <Project Path="CareFiji.Api/CareFiji.Api.csproj" />
+  <Project Path="CareFiji.Tests/CareFiji.Tests.csproj" />
+</Solution>

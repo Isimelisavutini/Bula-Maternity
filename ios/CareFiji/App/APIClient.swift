@@ -34,7 +34,21 @@ struct RefreshResponse: Codable { let accessToken: String; let refreshToken: Str
 
 final class APIClient {
     static let encoder: JSONEncoder = { let value = JSONEncoder(); value.dateEncodingStrategy = .iso8601; return value }()
-    static let decoder: JSONDecoder = { let value = JSONDecoder(); value.keyDecodingStrategy = .convertFromSnakeCase; value.dateDecodingStrategy = .iso8601; return value }()
+    static let decoder: JSONDecoder = {
+        let value = JSONDecoder()
+        value.keyDecodingStrategy = .convertFromSnakeCase
+        value.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let text = try container.decode(String.self)
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            if let date = formatter.date(from: text) { return date }
+            formatter.formatOptions = [.withInternetDateTime]
+            if let date = formatter.date(from: text) { return date }
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Expected an ISO 8601 timestamp")
+        }
+        return value
+    }()
 
     private let session: URLSession
     private let apiBaseURL: URL

@@ -3,8 +3,60 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_call:
 
 jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Validate Azure infrastructure template
+        run: az bicep build --file infra/azure/main.bicep --stdout > /dev/null
+      - run: dotnet test CareFiji.slnx --configuration Release --logger trx
+        working-directory: backend
+      - run: dotnet publish CareFiji.Api/CareFiji.Api.csproj --configuration Release --output publish
+        working-directory: backend
+      - uses: actions/upload-artifact@v4
+        with:
+          name: carefiji-api
+          path: backend/publish/
+      - name: Check existing browser contracts against C#
+        shell: bash
+        run: |
+          ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://127.0.0.1:5080 dotnet backend/publish/CareFiji.Api.dll &
+          api_pid=$!
+          trap 'kill "$api_pid"' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:5080/health/live; then break; fi
+            sleep 1
+          done
+          BACKEND_CONTRACT_URL=http://127.0.0.1:5080 node --test tests/backend-contract.test.mjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Build frontend with C# rewrite enabled
+        run: npm run build
+        env:
+          BACKEND_API_URL: http://127.0.0.1:5080
+      - name: Verify browser cookies through the Next.js rewrite
+        shell: bash
+        run: |
+          ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://127.0.0.1:5080 dotnet backend/publish/CareFiji.Api.dll &
+          api_pid=$!
+          npm run start -- --port 3100 &
+          web_pid=$!
+          trap 'kill "$api_pid" "$web_pid"' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:3100/api/session; then break; fi
+            sleep 1
+          done
+          BACKEND_CONTRACT_URL=http://127.0.0.1:3100 node --test tests/backend-contract.test.mjs
+
   web:
     runs-on: ubuntu-latest
     steps:
@@ -26,5 +78,7 @@ jobs:
       - run: xcodegen generate
         working-directory: ios
       - name: Build and test iOS 15-compatible target
-        run: xcodebuild -project CareFiji.xcodeproj -scheme CareFiji -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=latest,name=iPhone 16 Pro' test CODE_SIGNING_ALLOWED=NO
+        run: |
+          simulator_id=$(xcrun simctl list devices available --json | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const d=Object.values(JSON.parse(s).devices).flat().find(d=>d.name.startsWith("iPhone"));if(!d)process.exit(1);console.log(d.udid)});')
+          xcodebuild -project CareFiji.xcodeproj -scheme CareFiji -sdk iphonesimulator -destination "platform=iOS Simulator,id=$simulator_id" test CODE_SIGNING_ALLOWED=NO
         working-directory: ios

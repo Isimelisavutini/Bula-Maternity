@@ -1,0 +1,43 @@
+name: Provision Azure API
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: azure-api-production
+  cancel-in-progress: false
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    environment: azure-production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Validate supported runtime and infrastructure
+        run: |
+          az webapp list-runtimes --os linux --output tsv | grep -i 'DOTNETCORE:10.0'
+          az bicep build --file infra/azure/main.bicep --stdout > /dev/null
+      - name: Prepare secure deployment parameters
+        run: node scripts/azure-parameters.mjs
+        env:
+          AZURE_API_APP_NAME: ${{ vars.AZURE_API_APP_NAME }}
+          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          UPSTASH_REDIS_REST_URL: ${{ vars.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+      - name: Provision application and staging slot
+        env:
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+        run: az deployment group create --resource-group "$RESOURCE_GROUP" --template-file infra/azure/main.bicep --parameters "@$RUNNER_TEMP/carefiji-parameters.json" --query properties.provisioningState --output tsv
