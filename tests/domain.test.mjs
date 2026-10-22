@@ -21,7 +21,7 @@ test("server permissions reject unauthorized patient creation", () => {
 test("appointment workflow validates and controls transitions", () => {
   const booked = applyAction(seed, patient, "addAppointment", { service: "Ultrasound", date: "2026-10-30" }).next;
   const appointment = booked.appointments.at(-1);
-  assert.equal(appointment.name, "Mere Vakaloloma");
+  assert.equal(appointment.name, "Mereani Sovaki");
   assert.equal(appointment.status, "Pending");
   const confirmed = applyAction(booked, admin, "updateAppointment", { id: appointment.id, status: "Confirmed" }).next;
   assert.throws(() => applyAction(confirmed, admin, "updateAppointment", { id: appointment.id, status: "Pending" }), /INVALID_TRANSITION/);
