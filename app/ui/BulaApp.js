@@ -234,11 +234,10 @@ function SplashScreen({ onDone }) {
       aria-modal="true"
       aria-label="CareFiji introduction"
     >
+      <Image className="splash-baby-background" src="/pregnancy/stage-32.png" alt="" fill sizes="100vw" preload aria-hidden="true" />
+      <div className="splash-background-shade" />
       <div className="splash-brand">
-        <div className="splash-mark">✚</div>
-        <h1>CareFiji</h1>
-        <strong>BULA MATERNITY</strong>
-        <p>Care for every beginning. Nurturing mothers & babies across Fiji.</p>
+        <Image className="splash-logo" src="/branding/carefiji-logo.png" alt="CareFiji — Bula Maternity" width={640} height={640} preload />
       </div>
       <div className="splash-gateway">
         <div className="splash-loader">

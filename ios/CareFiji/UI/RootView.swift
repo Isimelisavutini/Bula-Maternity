@@ -20,15 +20,17 @@ struct RootView: View {
 struct SplashView: View {
     var body: some View {
         ZStack {
-            LinearGradient(colors: [CareColors.navy, CareColors.deepNavy], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
-            VStack {
-                Spacer()
-                VStack(spacing: 16) {
-                    Image(systemName: "cross.fill").font(.system(size: 46, weight: .black)).foregroundColor(.white).frame(width: 82, height: 82).background(CareColors.teal).clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)).shadow(color: CareColors.teal.opacity(0.55), radius: 28)
-                    Text("CareFiji").font(.system(size: 40, weight: .black, design: .rounded)).foregroundColor(.white)
-                    Text("BULA MATERNITY").font(.caption.bold()).tracking(3).foregroundColor(.mint)
-                    Text("Care for every beginning. Nurturing mothers & babies across Fiji.").font(.subheadline.weight(.semibold)).foregroundColor(.white.opacity(0.8)).multilineTextAlignment(.center).padding(.top, 4)
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    CareColors.background.frame(height: geometry.size.height * 0.36)
+                    Image(decorative: "Stage32").resizable().scaledToFill().frame(width: geometry.size.width, height: geometry.size.height * 0.64, alignment: .trailing).clipped()
                 }
+            }.ignoresSafeArea()
+            LinearGradient(stops: [.init(color: CareColors.background, location: 0.36), .init(color: CareColors.background.opacity(0.08), location: 0.5), .init(color: .clear, location: 0.7), .init(color: CareColors.deepNavy.opacity(0.75), location: 1)], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
+            VStack {
+                VStack(spacing: 16) {
+                    Image("CareFijiLogo").resizable().scaledToFit().frame(maxWidth: 280).accessibilityLabel("CareFiji Bula Maternity")
+                }.padding(.top, 20)
                 Spacer()
                 VStack(spacing: 14) {
                     ProgressView().progressViewStyle(.linear).tint(.mint)

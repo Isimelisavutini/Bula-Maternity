@@ -7,6 +7,36 @@
   --ink: var(--brand-charcoal);
 }
 
+.startup-splash {
+  justify-content: center;
+  align-items: flex-start;
+  padding: 48px 8vw;
+  background: #0d7a73;
+}
+
+.splash-baby-background { object-fit: cover; object-position: right center; }
+.splash-background-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #faf8f5 0%, rgba(250,248,245,.98) 25%, rgba(250,248,245,.86) 40%, rgba(250,248,245,.06) 70%);
+}
+.splash-brand, .splash-gateway { position: relative; z-index: 1; }
+.splash-logo { display: block; width: min(36vw, 440px); height: auto; object-fit: contain; }
+.splash-gateway { width: min(30vw, 310px); margin: 24px 0 0 3vw; }
+.splash-loader { background: rgba(13,122,115,.16); }
+.splash-loader i { background: linear-gradient(90deg, #0d7a73, #d29453); }
+.splash-gateway > div:last-child { justify-content: center; color: #0d7a73; }
+
+@media (max-width: 800px) {
+  .startup-splash { justify-content: flex-start; align-items: center; padding: max(42px, env(safe-area-inset-top)) 24px 28px; }
+  .splash-baby-background { top: auto !important; height: 64% !important; object-position: right center; }
+  .splash-background-shade { background: linear-gradient(180deg, #faf8f5 0%, #faf8f5 36%, rgba(250,248,245,.08) 50%, rgba(4,57,63,.02) 67%, rgba(4,57,63,.75) 100%); }
+  .splash-logo { width: min(68vw, 280px); }
+  .splash-gateway { width: min(100%, 310px); margin: auto 0 0; }
+  .splash-loader { background: rgba(255,255,255,.25); }
+  .splash-gateway > div:last-child { color: #fff; }
+}
+
 .growth-card {
   overflow: hidden;
   margin-bottom: 16px;
