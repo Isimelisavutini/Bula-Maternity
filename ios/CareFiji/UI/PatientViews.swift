@@ -52,6 +52,7 @@ struct DashboardView: View {
                             kickConfirmation = false
                         }
                     }
+                    if week == 4 { WeekFourGrowthCard() }
                     GestationCard(week: week, remaining: remaining, dueDate: dueDate)
                     WeekSimulator(week: $simulatedWeek)
                     if sync.clockWarning { Label("Your device clock differs from secure server time. Times will be reconciled during sync.", systemImage: "clock.badge.exclamationmark").font(.footnote).foregroundColor(.orange).padding() }
@@ -71,6 +72,10 @@ struct PregnancyDayCard: View {
     let week: Int
     let kicks: Int
     let logKick: () -> Void
+    private var comparison: (emoji: String, title: String, detail: String, status: String) {
+        if week == 4 { return ("🌱", "Tiny poppy seed", "Approx. 1 mm · Early implantation", "Implantation is established and early support structures are forming.") }
+        return ("🧡", "Fresh Fiji papaya", "35.6 cm · 760g", "Baby’s senses are active!")
+    }
     var body: some View {
         ZStack(alignment: .topTrailing) {
             LinearGradient(colors: [CareColors.darkTeal, CareColors.teal], startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -78,16 +83,51 @@ struct PregnancyDayCard: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack { Text("✦ PREGNANCY TIMELINE · DAY STATUS").font(.caption2.bold()).tracking(1); Spacer(); Text("Trimester \(week <= 13 ? 1 : week <= 27 ? 2 : 3)").font(.caption2.bold()).padding(6).background(Color.white.opacity(0.15)).clipShape(Capsule()) }
                 HStack(alignment: .firstTextBaseline, spacing: 6) { Text("Day \(day)").font(.system(size: 38, weight: .black, design: .rounded)); Text("of 280 days").font(.subheadline.bold()) }
-                Text("Day \(day % 7 == 0 ? 7 : day % 7) of your current week · Baby’s senses are active!").font(.caption).foregroundColor(.white.opacity(0.82))
+                Text("Day \(day % 7 == 0 ? 7 : day % 7) of your current week · \(comparison.status)").font(.caption).foregroundColor(.white.opacity(0.82))
                 Divider().overlay(Color.white.opacity(0.2))
                 HStack {
-                    Text("🧡").font(.title).frame(width: 44, height: 44).background(Color.white.opacity(0.14)).clipShape(RoundedRectangle(cornerRadius: 13))
-                    VStack(alignment: .leading) { Text("BABY SIZE COMPARISON").font(.system(size: 8, weight: .bold)).tracking(1); Text("Fresh Fiji papaya").font(.caption.bold()); Text("35.6 cm · 760g").font(.caption2) }
+                    Text(comparison.emoji).font(.title).frame(width: 44, height: 44).background(Color.white.opacity(0.14)).clipShape(RoundedRectangle(cornerRadius: 13))
+                    VStack(alignment: .leading) { Text("BABY SIZE COMPARISON").font(.system(size: 8, weight: .bold)).tracking(1); Text(comparison.title).font(.caption.bold()); Text(comparison.detail).font(.caption2) }
                     Spacer()
                     Button(action: logKick) { Label("Log Kick \(kicks)", systemImage: "heart.fill") }.buttonStyle(.bordered).tint(.white).accessibilityHint("Records one baby kick and uploads it when a connection is available")
                 }
             }.padding(20).foregroundColor(.white)
         }.clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)).shadow(color: CareColors.darkTeal.opacity(0.2), radius: 18, y: 10)
+    }
+}
+
+struct WeekFourGrowthCard: View {
+    private let milestones = [
+        "The blastocyst has firmly implanted into the uterine lining.",
+        "The amniotic sac and yolk sac are forming.",
+        "Cells are differentiating into three germ layers—ectoderm, mesoderm, and endoderm—laying the foundation for the nervous system, organs, skeleton, and muscles."
+    ]
+
+    var body: some View {
+        CareCard {
+            VStack(alignment: .leading, spacing: 14) {
+                Image("Week04")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 220)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .accessibilityLabel("Medical illustration of early embryonic development within the gestational sac")
+                Text("YOUR BABY THIS WEEK").font(.caption2.bold()).tracking(1.4).foregroundColor(CareColors.darkTeal)
+                Text("Week 4: Early Implantation & Embryonic Disc").font(.title3.bold()).foregroundColor(CareColors.navy)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Approx. 1 mm").font(.headline).foregroundColor(CareColors.darkTeal)
+                    Text("Comparable to a tiny poppy seed").font(.caption).foregroundColor(.secondary)
+                }
+                Text("Key milestones").font(.subheadline.bold()).foregroundColor(CareColors.navy)
+                ForEach(milestones, id: \.self) { milestone in
+                    HStack(alignment: .top, spacing: 9) {
+                        Circle().fill(CareColors.teal).frame(width: 6, height: 6).padding(.top, 6)
+                        Text(milestone).font(.footnote).fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+        }
     }
 }
 

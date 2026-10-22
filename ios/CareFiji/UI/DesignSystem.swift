@@ -1,12 +1,12 @@
 import SwiftUI
 
 enum CareColors {
-    static let navy = Color(red: 0.03, green: 0.23, blue: 0.34)
+    static let navy = Color(red: 26 / 255, green: 32 / 255, blue: 44 / 255)
     static let deepNavy = Color(red: 0.02, green: 0.12, blue: 0.18)
-    static let teal = Color(red: 0.03, green: 0.65, blue: 0.65)
-    static let darkTeal = Color(red: 0.03, green: 0.42, blue: 0.45)
+    static let teal = Color(red: 13 / 255, green: 122 / 255, blue: 115 / 255)
+    static let darkTeal = Color(red: 13 / 255, green: 122 / 255, blue: 115 / 255)
     static let orange = Color(red: 0.94, green: 0.40, blue: 0.20)
-    static let background = Color(red: 0.96, green: 0.98, blue: 0.97)
+    static let background = Color(red: 250 / 255, green: 248 / 255, blue: 245 / 255)
 }
 
 struct CareCard<Content: View>: View {

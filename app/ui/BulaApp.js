@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
 function MenuIcon() {
@@ -112,9 +113,9 @@ const milestones = [
   {
     week: 4,
     emoji: "🌱",
-    label: "Poppy seed",
-    length: "0.2 cm",
-    weight: "<1g",
+    label: "tiny poppy seed",
+    length: "Approx. 1 mm",
+    weight: "Early implantation",
   },
   {
     week: 12,
@@ -152,6 +153,57 @@ const milestones = [
     weight: "2.9kg",
   },
 ];
+
+const pregnancyGrowth = {
+  4: {
+    title: "Early Implantation & Embryonic Disc",
+    size: "Approx. 1 mm",
+    comparison: "Comparable to a tiny poppy seed",
+    image: "/pregnancy/week-04.png",
+    alt: "Medical illustration of early embryonic development within the gestational sac",
+    milestones: [
+      "The blastocyst has firmly implanted into the uterine lining.",
+      "The amniotic sac and yolk sac are forming.",
+      "Cells are differentiating into three germ layers—ectoderm, mesoderm, and endoderm—laying the foundation for the nervous system, organs, skeleton, and muscles.",
+    ],
+  },
+};
+
+function GrowthCard({ week }) {
+  const growth = pregnancyGrowth[week];
+  if (!growth) return null;
+
+  return (
+    <article className="growth-card" aria-labelledby={`growth-week-${week}`}>
+      <div className="growth-image">
+        <Image
+          src={growth.image}
+          alt={growth.alt}
+          fill
+          sizes="(max-width: 800px) 100vw, 330px"
+          priority={week === 4}
+        />
+        <span>Week {week}</span>
+      </div>
+      <div className="growth-copy">
+        <small>YOUR BABY THIS WEEK</small>
+        <h3 id={`growth-week-${week}`}>
+          Week {week}: {growth.title}
+        </h3>
+        <div className="growth-size">
+          <strong>{growth.size}</strong>
+          <span>{growth.comparison}</span>
+        </div>
+        <h4>Key milestones</h4>
+        <ul>
+          {growth.milestones.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </div>
+    </article>
+  );
+}
 
 function SplashScreen({ onDone }) {
   const [leaving, setLeaving] = useState(false);
@@ -200,6 +252,10 @@ function PatientDashboard({ compact = false }) {
     milestones[0],
   );
   const trimester = week <= 13 ? 1 : week <= 27 ? 2 : 3;
+  const status =
+    week === 4
+      ? "Implantation is established and early support structures are forming."
+      : "Baby’s senses are active!";
   function logKick() {
     setKicks((value) => value + 1);
     setHeartId((value) => value + 1);
@@ -246,8 +302,7 @@ function PatientDashboard({ compact = false }) {
           Day {days} <small>of 280 days</small>
         </div>
         <p>
-          ● Day {days % 7 || 7} of your current week · Baby&apos;s senses are
-          active!
+          ● Day {days % 7 || 7} of your current week · {status}
         </p>
         <div className="baby-snapshot">
           <span className="baby-emoji">{milestone.emoji}</span>
@@ -269,6 +324,7 @@ function PatientDashboard({ compact = false }) {
           </div>
         </div>
       </article>
+      <GrowthCard week={week} />
       <article className="gestation-card">
         <div className="dual-accent">
           <i />
@@ -340,6 +396,7 @@ function PatientDashboard({ compact = false }) {
           />
           <div className="week-jumps">
             {[
+              [4, "Early"],
               [12, "T1"],
               [20, "Scan"],
               [26, "Now"],
