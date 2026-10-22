@@ -3,38 +3,154 @@
 import { useCallback, useEffect, useState } from "react";
 
 function MenuIcon() {
-  return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" /></svg>;
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  );
 }
 
 function CloseIcon() {
-  return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg>;
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="m6 6 12 12M18 6 6 18" />
+    </svg>
+  );
 }
 
+function DownloadIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14" />
+    </svg>
+  );
+}
+
+const iosDownloadUrl =
+  process.env.NEXT_PUBLIC_IOS_APP_DOWNLOAD_URL ||
+  "https://github.com/Isimelisavutini/Bula-Maternity/releases/latest";
+
 function TabIcon({ name }) {
-  if (name === "Dashboard") return <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2" /><rect x="14" y="3" width="7" height="7" rx="2" /><rect x="3" y="14" width="7" height="7" rx="2" /><rect x="14" y="14" width="7" height="7" rx="2" /></svg>;
-  if (name === "Patients") return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>;
-  if (name === "Appointments") return <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 11h18" /></svg>;
-  if (name === "Maternity Wards") return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7v11M21 18v-7a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v7M3 14h18M7 9V7a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v2" /></svg>;
-  if (name === "Journey") return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 21s-7-4.35-7-11a4 4 0 0 1 7-2.65A4 4 0 0 1 19 10c0 6.65-7 11-7 11Z" /></svg>;
+  if (name === "Dashboard")
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="2" />
+        <rect x="14" y="3" width="7" height="7" rx="2" />
+        <rect x="3" y="14" width="7" height="7" rx="2" />
+        <rect x="14" y="14" width="7" height="7" rx="2" />
+      </svg>
+    );
+  if (name === "Patients")
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    );
+  if (name === "Appointments")
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <path d="M16 3v4M8 3v4M3 11h18" />
+      </svg>
+    );
+  if (name === "Maternity Wards")
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M3 7v11M21 18v-7a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v7M3 14h18M7 9V7a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v2" />
+      </svg>
+    );
+  if (name === "Journey")
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M12 21s-7-4.35-7-11a4 4 0 0 1 7-2.65A4 4 0 0 1 19 10c0 6.65-7 11-7 11Z" />
+      </svg>
+    );
   return <MenuIcon />;
 }
 
 const navigation = {
-  Administrator: ["Dashboard", "Patients", "Appointments", "Clinical Care", "Maternity Wards", "Billing", "Staff", "Reports", "Security", "Architecture"],
-  Doctor: ["Dashboard", "Patients", "Appointments", "Clinical Care", "Maternity Wards"],
-  Midwife: ["Dashboard", "Patients", "Appointments", "Clinical Care", "Maternity Wards"],
-  Receptionist: ["Dashboard", "Patients", "Appointments", "Maternity Wards", "Billing"],
+  Administrator: [
+    "Dashboard",
+    "Patients",
+    "Appointments",
+    "Clinical Care",
+    "Maternity Wards",
+    "Billing",
+    "Staff",
+    "Reports",
+    "Security",
+    "Architecture",
+  ],
+  Doctor: [
+    "Dashboard",
+    "Patients",
+    "Appointments",
+    "Clinical Care",
+    "Maternity Wards",
+  ],
+  Midwife: [
+    "Dashboard",
+    "Patients",
+    "Appointments",
+    "Clinical Care",
+    "Maternity Wards",
+  ],
+  Receptionist: [
+    "Dashboard",
+    "Patients",
+    "Appointments",
+    "Maternity Wards",
+    "Billing",
+  ],
   Finance: ["Dashboard", "Billing", "Reports"],
-  Patient: ["Dashboard", "Journey", "Appointments", "Maternity Wards"]
+  Patient: ["Dashboard", "Journey", "Appointments", "Maternity Wards"],
 };
 
 const milestones = [
-  { week: 4, emoji: "🌱", label: "Poppy seed", length: "0.2 cm", weight: "<1g" },
-  { week: 12, emoji: "🍋", label: "Fiji lime", length: "5.4 cm", weight: "14g" },
-  { week: 20, emoji: "🥭", label: "Small mango", length: "25.6 cm", weight: "300g" },
-  { week: 26, emoji: "🧡", label: "Fresh Fiji papaya", length: "35.6 cm", weight: "760g" },
-  { week: 32, emoji: "🥥", label: "Island coconut", length: "42.4 cm", weight: "1.7kg" },
-  { week: 37, emoji: "🍉", label: "Small watermelon", length: "48.6 cm", weight: "2.9kg" }
+  {
+    week: 4,
+    emoji: "🌱",
+    label: "Poppy seed",
+    length: "0.2 cm",
+    weight: "<1g",
+  },
+  {
+    week: 12,
+    emoji: "🍋",
+    label: "Fiji lime",
+    length: "5.4 cm",
+    weight: "14g",
+  },
+  {
+    week: 20,
+    emoji: "🥭",
+    label: "Small mango",
+    length: "25.6 cm",
+    weight: "300g",
+  },
+  {
+    week: 26,
+    emoji: "🧡",
+    label: "Fresh Fiji papaya",
+    length: "35.6 cm",
+    weight: "760g",
+  },
+  {
+    week: 32,
+    emoji: "🥥",
+    label: "Island coconut",
+    length: "42.4 cm",
+    weight: "1.7kg",
+  },
+  {
+    week: 37,
+    emoji: "🍉",
+    label: "Small watermelon",
+    length: "48.6 cm",
+    weight: "2.9kg",
+  },
 ];
 
 function SplashScreen({ onDone }) {
@@ -42,10 +158,43 @@ function SplashScreen({ onDone }) {
   useEffect(() => {
     const fadeTimer = window.setTimeout(() => setLeaving(true), 2300);
     const doneTimer = window.setTimeout(onDone, 2800);
-    return () => { window.clearTimeout(fadeTimer); window.clearTimeout(doneTimer); };
+    return () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(doneTimer);
+    };
   }, [onDone]);
-  function skip() { setLeaving(true); window.setTimeout(onDone, 450); }
-  return <div className={`startup-splash ${leaving ? "splash-leaving" : ""}`} role="dialog" aria-modal="true" aria-label="CareFiji introduction"><div className="splash-ministry"><span />Ministry of Health & Medical Services · Fiji</div><div className="splash-brand"><div className="splash-mark">✚</div><h1>CareFiji</h1><strong>BULA MATERNITY</strong><p>Care for every beginning. Nurturing mothers & babies across Fiji.</p></div><div className="splash-gateway"><div className="splash-loader"><i /></div><div><span>◈ Suva Secure Gateway</span><button onClick={skip}>Skip Intro →</button></div></div></div>;
+  function skip() {
+    setLeaving(true);
+    window.setTimeout(onDone, 450);
+  }
+  return (
+    <div
+      className={`startup-splash ${leaving ? "splash-leaving" : ""}`}
+      role="dialog"
+      aria-modal="true"
+      aria-label="CareFiji introduction"
+    >
+      <div className="splash-ministry">
+        <span />
+        Ministry of Health & Medical Services · Fiji
+      </div>
+      <div className="splash-brand">
+        <div className="splash-mark">✚</div>
+        <h1>CareFiji</h1>
+        <strong>BULA MATERNITY</strong>
+        <p>Care for every beginning. Nurturing mothers & babies across Fiji.</p>
+      </div>
+      <div className="splash-gateway">
+        <div className="splash-loader">
+          <i />
+        </div>
+        <div>
+          <span>◈ Suva Secure Gateway</span>
+          <button onClick={skip}>Skip Intro →</button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function PatientDashboard({ compact = false }) {
@@ -55,18 +204,177 @@ function PatientDashboard({ compact = false }) {
   const days = week * 7;
   const remaining = 280 - days;
   const progress = Math.round((days / 280) * 100);
-  const milestone = milestones.reduce((best, item) => item.week <= week ? item : best, milestones[0]);
+  const milestone = milestones.reduce(
+    (best, item) => (item.week <= week ? item : best),
+    milestones[0],
+  );
   const trimester = week <= 13 ? 1 : week <= 27 ? 2 : 3;
   function logKick() {
     setKicks((value) => value + 1);
     setHeartId((value) => value + 1);
-    try { const context = new AudioContext(); const oscillator = context.createOscillator(); const gain = context.createGain(); oscillator.frequency.value = 520; gain.gain.setValueAtTime(.05, context.currentTime); gain.gain.exponentialRampToValueAtTime(.001, context.currentTime + .12); oscillator.connect(gain).connect(context.destination); oscillator.start(); oscillator.stop(context.currentTime + .12); } catch {}
+    try {
+      const context = new AudioContext();
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.frequency.value = 520;
+      gain.gain.setValueAtTime(0.05, context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.12);
+      oscillator.connect(gain).connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + 0.12);
+    } catch {}
   }
-  return <div className="patient-dashboard"><div className="patient-greeting"><div><h2>Bula Vinaka, Mere! <span>🌺</span></h2><p>CWM Suva Clinic <b>• Today is feeling peaceful</b></p></div><button onClick={() => document.getElementById("week-simulator")?.scrollIntoView({ behavior: "smooth" })}>W{week} D{days % 7 || 7}</button></div><article className="day-card"><div className="day-rings" /><div className="day-meta"><span>✦ PREGNANCY TIMELINE · DAY STATUS</span><b>Trimester {trimester}</b></div><div className="day-number">Day {days} <small>of 280 days</small></div><p>● Day {days % 7 || 7} of your current week · Baby&apos;s senses are active!</p><div className="baby-snapshot"><span className="baby-emoji">{milestone.emoji}</span><div><small>BABY SIZE COMPARISON</small><strong>Size of a {milestone.label}</strong><em>{milestone.length}, {milestone.weight}</em></div><div className="kick-wrap"><i key={heartId}>♥</i><button onClick={logKick} aria-label={`Log baby kick. ${kicks} kicks logged`}>♥ Log Kick <b>{kicks}</b></button></div></div></article><article className="gestation-card"><div className="dual-accent"><i /><i /></div><div className="gestation-title"><strong>♡ MATERNAL GESTATION & EDD</strong><span>● {Math.ceil(remaining / 7)} weeks to go</span></div><div className="gestation-metrics"><div><small>Current Week</small><strong>Week {week}</strong><span>Trimester {trimester}</span></div><div><small>Remaining to Due Date</small><strong className="remaining-days">{remaining} <em>days</em></strong><span>{Math.floor(remaining / 7)} full weeks left</span></div></div><div className="pregnancy-progress"><p><span>Overall Pregnancy Progress</span><b>{progress}% Completed</b></p><div><i style={{ width: `${progress}%` }} /></div><small><span>Week 1</span><span>Week 13</span><span>Week 27</span><span>Week 40</span></small></div><div className="edd-banner"><span>⚑</span><div><small>EXPECTED DUE DATE (EDD)</small><strong>January 28, 2027</strong></div><button title="Based on a synthetic LMP date">LMP Info ⓘ</button></div></article>{compact ? null : <article className="week-simulator" id="week-simulator"><div><strong>⌁ Interactive Week Simulator</strong><span>LIVE SANDBOX</span></div><p>Slide to preview pregnancy metrics across all stages.</p><label htmlFor="week-range"><span>Week 4</span><b>Week {week} (Day {days})</b><span>Week 40</span></label><input id="week-range" type="range" min="4" max="40" value={week} onChange={(event) => setWeek(Number(event.target.value))} /><div className="week-jumps">{[[12,"T1"],[20,"Scan"],[26,"Now"],[37,"Term"]].map(([value,label]) => <button className={week === value ? "selected" : ""} onClick={() => setWeek(value)} key={value}>Week {value} ({label})</button>)}</div></article>}</div>;
+  return (
+    <div className="patient-dashboard">
+      <div className="patient-greeting">
+        <div>
+          <h2>
+            Bula Vinaka, Mere! <span>🌺</span>
+          </h2>
+          <p>
+            CWM Suva Clinic <b>• Today is feeling peaceful</b>
+          </p>
+        </div>
+        <button
+          onClick={() =>
+            document
+              .getElementById("week-simulator")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
+        >
+          W{week} D{days % 7 || 7}
+        </button>
+      </div>
+      <article className="day-card">
+        <div className="day-rings" />
+        <div className="day-meta">
+          <span>✦ PREGNANCY TIMELINE · DAY STATUS</span>
+          <b>Trimester {trimester}</b>
+        </div>
+        <div className="day-number">
+          Day {days} <small>of 280 days</small>
+        </div>
+        <p>
+          ● Day {days % 7 || 7} of your current week · Baby&apos;s senses are
+          active!
+        </p>
+        <div className="baby-snapshot">
+          <span className="baby-emoji">{milestone.emoji}</span>
+          <div>
+            <small>BABY SIZE COMPARISON</small>
+            <strong>Size of a {milestone.label}</strong>
+            <em>
+              {milestone.length}, {milestone.weight}
+            </em>
+          </div>
+          <div className="kick-wrap">
+            <i key={heartId}>♥</i>
+            <button
+              onClick={logKick}
+              aria-label={`Log baby kick. ${kicks} kicks logged`}
+            >
+              ♥ Log Kick <b>{kicks}</b>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article className="gestation-card">
+        <div className="dual-accent">
+          <i />
+          <i />
+        </div>
+        <div className="gestation-title">
+          <strong>♡ MATERNAL GESTATION & EDD</strong>
+          <span>● {Math.ceil(remaining / 7)} weeks to go</span>
+        </div>
+        <div className="gestation-metrics">
+          <div>
+            <small>Current Week</small>
+            <strong>Week {week}</strong>
+            <span>Trimester {trimester}</span>
+          </div>
+          <div>
+            <small>Remaining to Due Date</small>
+            <strong className="remaining-days">
+              {remaining} <em>days</em>
+            </strong>
+            <span>{Math.floor(remaining / 7)} full weeks left</span>
+          </div>
+        </div>
+        <div className="pregnancy-progress">
+          <p>
+            <span>Overall Pregnancy Progress</span>
+            <b>{progress}% Completed</b>
+          </p>
+          <div>
+            <i style={{ width: `${progress}%` }} />
+          </div>
+          <small>
+            <span>Week 1</span>
+            <span>Week 13</span>
+            <span>Week 27</span>
+            <span>Week 40</span>
+          </small>
+        </div>
+        <div className="edd-banner">
+          <span>⚑</span>
+          <div>
+            <small>EXPECTED DUE DATE (EDD)</small>
+            <strong>January 28, 2027</strong>
+          </div>
+          <button title="Based on a synthetic LMP date">LMP Info ⓘ</button>
+        </div>
+      </article>
+      {compact ? null : (
+        <article className="week-simulator" id="week-simulator">
+          <div>
+            <strong>⌁ Interactive Week Simulator</strong>
+            <span>LIVE SANDBOX</span>
+          </div>
+          <p>Slide to preview pregnancy metrics across all stages.</p>
+          <label htmlFor="week-range">
+            <span>Week 4</span>
+            <b>
+              Week {week} (Day {days})
+            </b>
+            <span>Week 40</span>
+          </label>
+          <input
+            id="week-range"
+            type="range"
+            min="4"
+            max="40"
+            value={week}
+            onChange={(event) => setWeek(Number(event.target.value))}
+          />
+          <div className="week-jumps">
+            {[
+              [12, "T1"],
+              [20, "Scan"],
+              [26, "Now"],
+              [37, "Term"],
+            ].map(([value, label]) => (
+              <button
+                className={week === value ? "selected" : ""}
+                onClick={() => setWeek(value)}
+                key={value}
+              >
+                Week {value} ({label})
+              </button>
+            ))}
+          </div>
+        </article>
+      )}
+    </div>
+  );
 }
 
 async function api(operation, options) {
-  const result = await fetch(`/api/${operation}`, { cache: "no-store", ...options, headers: { "Content-Type": "application/json", ...options?.headers } });
+  const result = await fetch(`/api/${operation}`, {
+    cache: "no-store",
+    ...options,
+    headers: { "Content-Type": "application/json", ...options?.headers },
+  });
   const body = await result.json();
   if (!result.ok) throw new Error(body.error || "REQUEST_FAILED");
   return body;
@@ -83,7 +391,7 @@ function Login({ onLogin }) {
     midwife: "bula-midwife",
     reception: "bula-reception",
     finance: "bula-finance",
-    patient: "bula-patient"
+    patient: "bula-patient",
   };
 
   function choose(value) {
@@ -96,7 +404,10 @@ function Login({ onLogin }) {
     setBusy(true);
     setError("");
     try {
-      const result = await api("login", { method: "POST", body: JSON.stringify({ username, password }) });
+      const result = await api("login", {
+        method: "POST",
+        body: JSON.stringify({ username, password }),
+      });
       onLogin(result.user);
     } catch {
       setError("Those demo credentials were not accepted.");
@@ -108,71 +419,454 @@ function Login({ onLogin }) {
   return (
     <main className="login-page">
       <section className="login-card">
-        <div className="brand brand-dark"><span className="mark">✚</span><span><strong>CareFiji</strong><small>BULA MATERNITY</small></span></div>
+        <div className="brand brand-dark">
+          <span className="mark">✚</span>
+          <span>
+            <strong>CareFiji</strong>
+            <small>BULA MATERNITY</small>
+          </span>
+        </div>
         <h1>Welcome to the demonstration workspace.</h1>
-        <p>Explore synthetic maternity workflows with server-enforced role permissions.</p>
-        <div className="warning">Demonstration only. Never enter real patient or clinical information.</div>
+        <p>
+          Explore synthetic maternity workflows with server-enforced role
+          permissions.
+        </p>
+        <div className="warning">
+          Demonstration only. Never enter real patient or clinical information.
+        </div>
         <form onSubmit={submit}>
-          <label>Demo identity
-            <select value={username} onChange={(event) => choose(event.target.value)}>
-              <option value="admin">Administrator</option><option value="doctor">Doctor</option><option value="midwife">Midwife</option>
-              <option value="reception">Receptionist</option><option value="finance">Finance</option><option value="patient">Patient</option>
+          <label>
+            Demo identity
+            <select
+              value={username}
+              onChange={(event) => choose(event.target.value)}
+            >
+              <option value="admin">Administrator</option>
+              <option value="doctor">Doctor</option>
+              <option value="midwife">Midwife</option>
+              <option value="reception">Receptionist</option>
+              <option value="finance">Finance</option>
+              <option value="patient">Patient</option>
             </select>
           </label>
-          <label>Password<input value={password} onChange={(event) => setPassword(event.target.value)} type="password" autoComplete="current-password" /></label>
-          <button disabled={busy}>{busy ? "Signing in…" : "Enter secure demo"}</button>
+          <label>
+            Password
+            <input
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              type="password"
+              autoComplete="current-password"
+            />
+          </label>
+          <button disabled={busy}>
+            {busy ? "Signing in…" : "Enter secure demo"}
+          </button>
         </form>
-        {error ? <p className="error" role="alert">{error}</p> : null}
-        <p><a href="/patient">Open the production patient portal</a></p>
+        {error ? (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        ) : null}
+        <p>
+          <a href="/patient">Open the production patient portal</a>
+        </p>
       </section>
     </main>
   );
 }
 
 function DataTable({ headers, rows }) {
-  return <div className="table"><table><thead><tr>{headers.map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={row.key || index}>{row.cells.map((cell, cellIndex) => <td data-label={headers[cellIndex]} key={cellIndex}>{cell}</td>)}</tr>)}</tbody></table></div>;
+  return (
+    <div className="table">
+      <table>
+        <thead>
+          <tr>
+            {headers.map((item) => (
+              <th key={item}>{item}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, index) => (
+            <tr key={row.key || index}>
+              {row.cells.map((cell, cellIndex) => (
+                <td data-label={headers[cellIndex]} key={cellIndex}>
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 function Dashboard({ data, user }) {
   if (user.role === "Patient") return <PatientDashboard />;
-  return <><div className="hero"><span>AUTHENTICATED DEMONSTRATION · SUVA, FIJI</span><h2>Care for every beginning.</h2><p>Signed in as {user.name} · {user.role}</p></div><div className="stats">{[
-    ["Synthetic patients", data.patients.length], ["Appointments", data.appointments.length], ["Admitted", data.patients.filter((item) => item.status === "Admitted").length], ["Available rooms", data.rooms.filter((item) => !item.patient).length]
-  ].map(([label, value]) => <div className="stat" key={label}><small>{label}</small><strong>{value}</strong></div>)}</div></>;
+  return (
+    <>
+      <div className="hero">
+        <span>AUTHENTICATED DEMONSTRATION · SUVA, FIJI</span>
+        <h2>Care for every beginning.</h2>
+        <p>
+          Signed in as {user.name} · {user.role}
+        </p>
+      </div>
+      <div className="stats">
+        {[
+          ["Synthetic patients", data.patients.length],
+          ["Appointments", data.appointments.length],
+          [
+            "Admitted",
+            data.patients.filter((item) => item.status === "Admitted").length,
+          ],
+          [
+            "Available rooms",
+            data.rooms.filter((item) => !item.patient).length,
+          ],
+        ].map(([label, value]) => (
+          <div className="stat" key={label}>
+            <small>{label}</small>
+            <strong>{value}</strong>
+          </div>
+        ))}
+      </div>
+    </>
+  );
 }
 
 function Appointments({ data, role, act }) {
   async function submit(event) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    await act("addAppointment", { name: form.get("name"), service: form.get("service"), date: form.get("date") });
+    await act("addAppointment", {
+      name: form.get("name"),
+      service: form.get("service"),
+      date: form.get("date"),
+    });
     event.currentTarget.reset();
   }
-  return <><h2>Appointments</h2><DataTable headers={["Patient", "Service", "Date", "Status", "Action"]} rows={data.appointments.map((item) => ({ key: item.id, cells: [item.name, item.service, item.date, item.status, ["Administrator", "Doctor", "Receptionist"].includes(role) && item.status !== "Cancelled" ? <button className="tiny" onClick={() => act("updateAppointment", { id: item.id, status: item.status === "Pending" ? "Confirmed" : "Cancelled" })}>{item.status === "Pending" ? "Confirm" : "Cancel"}</button> : "—"] }))} /><h3>Request synthetic appointment</h3><form onSubmit={submit}><label>Patient<input name="name" defaultValue={role === "Patient" ? "Mereani Sovaki" : ""} readOnly={role === "Patient"} required /></label><label>Service<select name="service"><option>Antenatal</option><option>Ultrasound</option><option>Postnatal</option><option>Delivery planning</option></select></label><label>Date<input type="date" name="date" defaultValue="2026-10-27" required /></label><button>Submit request</button></form></>;
+  return (
+    <>
+      <h2>Appointments</h2>
+      <DataTable
+        headers={["Patient", "Service", "Date", "Status", "Action"]}
+        rows={data.appointments.map((item) => ({
+          key: item.id,
+          cells: [
+            item.name,
+            item.service,
+            item.date,
+            item.status,
+            ["Administrator", "Doctor", "Receptionist"].includes(role) &&
+            item.status !== "Cancelled" ? (
+              <button
+                className="tiny"
+                onClick={() =>
+                  act("updateAppointment", {
+                    id: item.id,
+                    status:
+                      item.status === "Pending" ? "Confirmed" : "Cancelled",
+                  })
+                }
+              >
+                {item.status === "Pending" ? "Confirm" : "Cancel"}
+              </button>
+            ) : (
+              "—"
+            ),
+          ],
+        }))}
+      />
+      <h3>Request synthetic appointment</h3>
+      <form onSubmit={submit}>
+        <label>
+          Patient
+          <input
+            name="name"
+            defaultValue={role === "Patient" ? "Mereani Sovaki" : ""}
+            readOnly={role === "Patient"}
+            required
+          />
+        </label>
+        <label>
+          Service
+          <select name="service">
+            <option>Antenatal</option>
+            <option>Ultrasound</option>
+            <option>Postnatal</option>
+            <option>Delivery planning</option>
+          </select>
+        </label>
+        <label>
+          Date
+          <input type="date" name="date" defaultValue="2026-10-27" required />
+        </label>
+        <button>Submit request</button>
+      </form>
+    </>
+  );
 }
 
 function ClinicalCare({ data, role, act }) {
   const [selected, setSelected] = useState(data.patients[0]?.id || "");
-  const patient = data.patients.find((item) => item.id === selected) || data.patients[0];
+  const patient =
+    data.patients.find((item) => item.id === selected) || data.patients[0];
   const note = patient ? data.notes[patient.id] : null;
   const [text, setText] = useState(() => note?.text || "");
   if (!patient) return <p>No patient records are available for this role.</p>;
-  return <><h2>Clinical Care</h2><div className="warning">Synthetic records only. This prototype must not be used for clinical decisions.</div><select value={patient.id} onChange={(event) => { const id = event.target.value; setSelected(id); setText(data.notes[id]?.text || ""); }}>{data.patients.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select><div className="panel"><h3>{patient.name}</h3><p>{patient.weeks} weeks · {patient.status}</p></div><h3>Clinical note workflow</h3><textarea value={text} onChange={(event) => setText(event.target.value)} rows="5" placeholder="Required synthetic note" /><p>State: <b>{note?.status || "Not started"}</b></p><button onClick={() => act("saveNote", { patientId: patient.id, text })}>Save draft</button>{["Administrator", "Doctor"].includes(role) ? <button className="secondary-action" onClick={() => act("reviewNote", { patientId: patient.id })}>Review & lock state</button> : null}</>;
+  return (
+    <>
+      <h2>Clinical Care</h2>
+      <div className="warning">
+        Synthetic records only. This prototype must not be used for clinical
+        decisions.
+      </div>
+      <select
+        value={patient.id}
+        onChange={(event) => {
+          const id = event.target.value;
+          setSelected(id);
+          setText(data.notes[id]?.text || "");
+        }}
+      >
+        {data.patients.map((item) => (
+          <option key={item.id} value={item.id}>
+            {item.name}
+          </option>
+        ))}
+      </select>
+      <div className="panel">
+        <h3>{patient.name}</h3>
+        <p>
+          {patient.weeks} weeks · {patient.status}
+        </p>
+      </div>
+      <h3>Clinical note workflow</h3>
+      <textarea
+        value={text}
+        onChange={(event) => setText(event.target.value)}
+        rows="5"
+        placeholder="Required synthetic note"
+      />
+      <p>
+        State: <b>{note?.status || "Not started"}</b>
+      </p>
+      <button onClick={() => act("saveNote", { patientId: patient.id, text })}>
+        Save draft
+      </button>
+      {["Administrator", "Doctor"].includes(role) ? (
+        <button
+          className="secondary-action"
+          onClick={() => act("reviewNote", { patientId: patient.id })}
+        >
+          Review & lock state
+        </button>
+      ) : null}
+    </>
+  );
 }
 
 function Content({ page, data, user, act, audit }) {
   const role = user.role;
   if (page === "Dashboard") return <Dashboard data={data} user={user} />;
-  if (page === "Journey" && role === "Patient") return <><h2 className="journey-title">My Pregnancy Journey</h2><PatientDashboard /></>;
-  if (page === "Patients") return <><div className="heading"><h2>Patient Registry</h2>{["Administrator", "Receptionist"].includes(role) ? <button onClick={() => act("addPatient", {})}>+ Add synthetic patient</button> : null}</div><DataTable headers={["ID", "Name", "Gestation", "Status"]} rows={data.patients.map((item) => ({ key: item.id, cells: [item.id, item.name, `${item.weeks} weeks`, item.status] }))} /></>;
-  if (page === "Appointments") return <Appointments data={data} role={role} act={act} />;
-  if (page === "Clinical Care") return <ClinicalCare data={data} role={role} act={act} />;
-  if (page === "Maternity Wards" && role === "Patient") return <><h2>My Maternity Ward</h2><div className="patient-ward"><span>⌂</span><div><small>PLANNED BIRTH LOCATION</small><h3>CWM Suva Maternity</h3><p>Your ward is pre-allocated. A room assignment will be confirmed closer to admission.</p></div></div></>;
-  if (page === "Maternity Wards") return <><h2>Maternity Ward Board</h2><div className="rooms">{data.rooms.map((room) => <div className="panel" key={room.id}><small>{room.id}</small><h3>{room.patient ? "Occupied" : "Available"}</h3><p>{room.patient || "Unassigned"}</p>{role !== "Doctor" ? <button className="tiny" onClick={() => act("updateRoom", { id: room.id })}>{room.patient ? "Clear" : "Assign synthetic occupant"}</button> : null}</div>)}</div></>;
-  if (page === "Billing") return <><h2>Billing</h2><p>Illustrative FJD values only.</p><DataTable headers={["Invoice", "Patient", "Amount", "Status", "Action"]} rows={data.invoices.map((invoice) => ({ key: invoice.id, cells: [invoice.id, invoice.name, `FJD ${invoice.amount.toLocaleString()}`, invoice.status, ["Administrator", "Finance"].includes(role) ? <button className="tiny" onClick={() => act("updateInvoice", { id: invoice.id })}>Advance status</button> : "—"] }))} /></>;
-  if (page === "Staff") return <><h2>Team Directory</h2><DataTable headers={["Staff", "Role", "Shift"]} rows={[["Dr A. Kumar", "Obstetrician", "Day"], ["Dr L. Singh", "Obstetrician", "On-call"], ["Nurse M. Ratu", "Senior Midwife", "Day"], ["Nurse P. Devi", "Midwife", "Night"]].map((cells) => ({ key: cells[0], cells }))} /></>;
-  if (page === "Reports") return <><h2>Operational Reports</h2><div className="stats"><div className="stat"><small>Appointments</small><strong>{data.appointments.length}</strong></div><div className="stat"><small>Invoice total</small><strong>FJD {data.invoices.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}</strong></div></div></>;
-  if (page === "Security") return <><h2>Security & Audit</h2><div className="panel"><h3>Signed demo identity</h3><p>{user.name} · {user.role}</p><p className="mono">{user.id}</p></div><h3>Recent audit events</h3>{audit ? <DataTable headers={["Time", "Actor", "Role", "Action", "Target", "Outcome"]} rows={audit.map((item) => ({ key: item.id, cells: [new Date(item.at).toLocaleString(), item.actorName, item.role, item.action, item.target, item.outcome] }))} /> : <p>Loading audit events…</p>}</>;
-  return <><h2>Production-readiness gates</h2>{[["Identity & RBAC", "Signed HTTP-only sessions plus server-side permission checks are implemented."], ["Durable storage", "Shared synthetic state and audit events are stored in Upstash Redis."], ["Clinical workflow", "Notes require content and move Draft → Reviewed; appointments use controlled transitions."], ["Still required", "Independent penetration testing, threat modelling, backups, privacy assessment, clinical governance, and regulatory review are required before any real-world use."]].map(([title, copy]) => <div className="panel" key={title}><h3>{title}</h3><p>{copy}</p></div>)}</>;
+  if (page === "Journey" && role === "Patient")
+    return (
+      <>
+        <h2 className="journey-title">My Pregnancy Journey</h2>
+        <PatientDashboard />
+      </>
+    );
+  if (page === "Patients")
+    return (
+      <>
+        <div className="heading">
+          <h2>Patient Registry</h2>
+          {["Administrator", "Receptionist"].includes(role) ? (
+            <button onClick={() => act("addPatient", {})}>
+              + Add synthetic patient
+            </button>
+          ) : null}
+        </div>
+        <DataTable
+          headers={["ID", "Name", "Gestation", "Status"]}
+          rows={data.patients.map((item) => ({
+            key: item.id,
+            cells: [item.id, item.name, `${item.weeks} weeks`, item.status],
+          }))}
+        />
+      </>
+    );
+  if (page === "Appointments")
+    return <Appointments data={data} role={role} act={act} />;
+  if (page === "Clinical Care")
+    return <ClinicalCare data={data} role={role} act={act} />;
+  if (page === "Maternity Wards" && role === "Patient")
+    return (
+      <>
+        <h2>My Maternity Ward</h2>
+        <div className="patient-ward">
+          <span>⌂</span>
+          <div>
+            <small>PLANNED BIRTH LOCATION</small>
+            <h3>CWM Suva Maternity</h3>
+            <p>
+              Your ward is pre-allocated. A room assignment will be confirmed
+              closer to admission.
+            </p>
+          </div>
+        </div>
+      </>
+    );
+  if (page === "Maternity Wards")
+    return (
+      <>
+        <h2>Maternity Ward Board</h2>
+        <div className="rooms">
+          {data.rooms.map((room) => (
+            <div className="panel" key={room.id}>
+              <small>{room.id}</small>
+              <h3>{room.patient ? "Occupied" : "Available"}</h3>
+              <p>{room.patient || "Unassigned"}</p>
+              {role !== "Doctor" ? (
+                <button
+                  className="tiny"
+                  onClick={() => act("updateRoom", { id: room.id })}
+                >
+                  {room.patient ? "Clear" : "Assign synthetic occupant"}
+                </button>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </>
+    );
+  if (page === "Billing")
+    return (
+      <>
+        <h2>Billing</h2>
+        <p>Illustrative FJD values only.</p>
+        <DataTable
+          headers={["Invoice", "Patient", "Amount", "Status", "Action"]}
+          rows={data.invoices.map((invoice) => ({
+            key: invoice.id,
+            cells: [
+              invoice.id,
+              invoice.name,
+              `FJD ${invoice.amount.toLocaleString()}`,
+              invoice.status,
+              ["Administrator", "Finance"].includes(role) ? (
+                <button
+                  className="tiny"
+                  onClick={() => act("updateInvoice", { id: invoice.id })}
+                >
+                  Advance status
+                </button>
+              ) : (
+                "—"
+              ),
+            ],
+          }))}
+        />
+      </>
+    );
+  if (page === "Staff")
+    return (
+      <>
+        <h2>Team Directory</h2>
+        <DataTable
+          headers={["Staff", "Role", "Shift"]}
+          rows={[
+            ["Dr A. Kumar", "Obstetrician", "Day"],
+            ["Dr L. Singh", "Obstetrician", "On-call"],
+            ["Nurse M. Ratu", "Senior Midwife", "Day"],
+            ["Nurse P. Devi", "Midwife", "Night"],
+          ].map((cells) => ({ key: cells[0], cells }))}
+        />
+      </>
+    );
+  if (page === "Reports")
+    return (
+      <>
+        <h2>Operational Reports</h2>
+        <div className="stats">
+          <div className="stat">
+            <small>Appointments</small>
+            <strong>{data.appointments.length}</strong>
+          </div>
+          <div className="stat">
+            <small>Invoice total</small>
+            <strong>
+              FJD{" "}
+              {data.invoices
+                .reduce((sum, item) => sum + item.amount, 0)
+                .toLocaleString()}
+            </strong>
+          </div>
+        </div>
+      </>
+    );
+  if (page === "Security")
+    return (
+      <>
+        <h2>Security & Audit</h2>
+        <div className="panel">
+          <h3>Signed demo identity</h3>
+          <p>
+            {user.name} · {user.role}
+          </p>
+          <p className="mono">{user.id}</p>
+        </div>
+        <h3>Recent audit events</h3>
+        {audit ? (
+          <DataTable
+            headers={["Time", "Actor", "Role", "Action", "Target", "Outcome"]}
+            rows={audit.map((item) => ({
+              key: item.id,
+              cells: [
+                new Date(item.at).toLocaleString(),
+                item.actorName,
+                item.role,
+                item.action,
+                item.target,
+                item.outcome,
+              ],
+            }))}
+          />
+        ) : (
+          <p>Loading audit events…</p>
+        )}
+      </>
+    );
+  return (
+    <>
+      <h2>Production-readiness gates</h2>
+      {[
+        [
+          "Identity & RBAC",
+          "Signed HTTP-only sessions plus server-side permission checks are implemented.",
+        ],
+        [
+          "Durable storage",
+          "Shared synthetic state and audit events are stored in Upstash Redis.",
+        ],
+        [
+          "Clinical workflow",
+          "Notes require content and move Draft → Reviewed; appointments use controlled transitions.",
+        ],
+        [
+          "Still required",
+          "Independent penetration testing, threat modelling, backups, privacy assessment, clinical governance, and regulatory review are required before any real-world use.",
+        ],
+      ].map(([title, copy]) => (
+        <div className="panel" key={title}>
+          <h3>{title}</h3>
+          <p>{copy}</p>
+        </div>
+      ))}
+    </>
+  );
 }
 
 export default function BulaApp() {
@@ -185,36 +879,66 @@ export default function BulaApp() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const dismissSplash = useCallback(() => setShowSplash(false), []);
-  const splashControls = <>{showSplash ? <SplashScreen onDone={dismissSplash} /> : null}<button className="splash-replay" onClick={() => setShowSplash(true)} aria-label="Replay startup splash">↻ Splash</button></>;
+  const splashControls = (
+    <>
+      {showSplash ? <SplashScreen onDone={dismissSplash} /> : null}
+      <button
+        className="splash-replay"
+        onClick={() => setShowSplash(true)}
+        aria-label="Replay startup splash"
+      >
+        ↻ Splash
+      </button>
+    </>
+  );
 
   useEffect(() => {
     let active = true;
-    api("session").then(async (session) => {
-      if (!session.user) return { session, result: null };
-      const result = await api("data");
-      return { session, result };
-    }).then(({ session, result }) => {
-      if (!active) return;
-      setUser(session.user);
-      setData(result?.data || null);
-    }).catch(() => {}).finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
+    api("session")
+      .then(async (session) => {
+        if (!session.user) return { session, result: null };
+        const result = await api("data");
+        return { session, result };
+      })
+      .then(({ session, result }) => {
+        if (!active) return;
+        setUser(session.user);
+        setData(result?.data || null);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
   useEffect(() => {
-    if (page === "Security" && user?.role === "Administrator") api("audit").then((result) => setAudit(result.audit)).catch((error) => setStatus(error.message));
+    if (page === "Security" && user?.role === "Administrator")
+      api("audit")
+        .then((result) => setAudit(result.audit))
+        .catch((error) => setStatus(error.message));
   }, [page, user?.role]);
   useEffect(() => {
     if (!menuOpen) return undefined;
-    const closeOnEscape = (event) => { if (event.key === "Escape") setMenuOpen(false); };
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
     document.addEventListener("keydown", closeOnEscape);
     document.body.classList.add("menu-open");
-    return () => { document.removeEventListener("keydown", closeOnEscape); document.body.classList.remove("menu-open"); };
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.body.classList.remove("menu-open");
+    };
   }, [menuOpen]);
 
   async function act(action, payload) {
     setStatus("");
     try {
-      const result = await api("action", { method: "POST", body: JSON.stringify({ action, payload }) });
+      const result = await api("action", {
+        method: "POST",
+        body: JSON.stringify({ action, payload }),
+      });
       setData(result.data);
       setStatus("Saved and recorded in the audit log.");
     } catch (error) {
@@ -224,16 +948,221 @@ export default function BulaApp() {
 
   async function logout() {
     await api("logout", { method: "POST", body: "{}" });
-    setUser(null); setData(null); setPage("Dashboard"); setAudit(null); setMenuOpen(false);
+    setUser(null);
+    setData(null);
+    setPage("Dashboard");
+    setAudit(null);
+    setMenuOpen(false);
   }
 
-  if (loading) return <>{splashControls}<div className="loading">Loading CareFiji…</div></>;
-  if (!user || !data) return <>{splashControls}<Login onLogin={async (nextUser) => { setUser(nextUser); const result = await api("data"); setData(result.data); }} /></>;
+  if (loading)
+    return (
+      <>
+        {splashControls}
+        <div className="loading">Loading CareFiji…</div>
+      </>
+    );
+  if (!user || !data)
+    return (
+      <>
+        {splashControls}
+        <Login
+          onLogin={async (nextUser) => {
+            setUser(nextUser);
+            const result = await api("data");
+            setData(result.data);
+          }}
+        />
+      </>
+    );
   const pages = navigation[user.role] || ["Dashboard"];
   const activePage = pages.includes(page) ? page : "Dashboard";
-  const mobileTabs = (user.role === "Patient" ? ["Dashboard", "Journey", "Appointments", "Maternity Wards"] : ["Dashboard", "Patients", "Appointments", "Maternity Wards"]).filter((item) => pages.includes(item));
-  const initials = user.name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
-  const choosePage = (nextPage) => { setPage(nextPage); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const mobileTabs = (
+    user.role === "Patient"
+      ? ["Dashboard", "Journey", "Appointments", "Maternity Wards"]
+      : ["Dashboard", "Patients", "Appointments", "Maternity Wards"]
+  ).filter((item) => pages.includes(item));
+  const initials = user.name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+  const choosePage = (nextPage) => {
+    setPage(nextPage);
+    setMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-  return <div className="shell">{splashControls}<div className="mobile-bar"><div className="brand brand-mobile"><span className="mark">✚</span><span><strong>CareFiji</strong><small>BULA MATERNITY</small></span></div><div className="mobile-actions"><span className="avatar online" aria-label={`Signed in as ${user.name}`}>{initials}</span><button className="icon-button" aria-label="Open navigation" aria-controls="app-navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><MenuIcon /></button></div></div>{menuOpen ? <button className="menu-scrim" aria-label="Close navigation" onClick={() => setMenuOpen(false)} /> : null}<aside id="app-navigation" className={menuOpen ? "menu-visible" : ""} role={menuOpen ? "dialog" : undefined} aria-modal={menuOpen || undefined} aria-label="Navigation menu"><div className="drawer-head"><div className="brand"><span className="mark">✚</span><span><strong>CareFiji</strong><small>BULA MATERNITY</small></span></div><button className="icon-button drawer-close" aria-label="Close navigation" onClick={() => setMenuOpen(false)}><CloseIcon /></button></div><p className="sidecaption">SECURE DEMO WORKSPACE</p><nav aria-label="Primary navigation">{pages.map((item) => <button key={item} className={item === activePage ? "active" : ""} onClick={() => choosePage(item)}>{item}</button>)}</nav><button className="logout" onClick={logout}>Sign out</button><div className="bottom">Suva, Fiji · Synthetic data only</div></aside><main><header><div><small>CAREFIJI / {activePage.toUpperCase()}</small><h1>{activePage}</h1></div><div className="actions"><span>DEMO ONLY</span><b>{user.role}</b></div></header><section><Content page={activePage} data={data} user={user} act={act} audit={audit} />{status ? <p className="status-message" role="status">{status}</p> : null}<p className="status">Authenticated prototype · no real patient information permitted.<br />Copyright @ BASA</p></section></main><nav className="mobile-tabs" aria-label="Quick navigation">{mobileTabs.map((item) => { const active = item === activePage; const label = item === "Appointments" ? "Appts" : item === "Maternity Wards" ? "Wards" : item; const count = item === "Patients" ? data.patients.length : item === "Appointments" ? data.appointments.length : null; return <button key={item} className={active ? "tab-active" : ""} aria-current={active ? "page" : undefined} onClick={() => choosePage(item)}><span className="tab-icon"><TabIcon name={item} />{count !== null ? <span className={`tab-badge ${item === "Appointments" ? "badge-alert" : ""}`}>{count}</span> : null}{active ? <span className="tab-dot" /> : null}</span><span>{label}</span></button>; })}<button aria-expanded={menuOpen} aria-controls="app-navigation" onClick={() => setMenuOpen(true)}><span className="tab-icon"><TabIcon name="Menu" /></span><span>Menu</span></button><span className="home-indicator" aria-hidden="true" /></nav></div>;
+  return (
+    <div className="shell">
+      {splashControls}
+      <div className="mobile-bar">
+        <div className="brand brand-mobile">
+          <span className="mark">✚</span>
+          <span>
+            <strong>CareFiji</strong>
+            <small>BULA MATERNITY</small>
+          </span>
+        </div>
+        <div className="mobile-actions">
+          <span
+            className="avatar online"
+            aria-label={`Signed in as ${user.name}`}
+          >
+            {initials}
+          </span>
+          <button
+            className="icon-button"
+            aria-label="Open navigation"
+            aria-controls="app-navigation"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(true)}
+          >
+            <MenuIcon />
+          </button>
+        </div>
+      </div>
+      {menuOpen ? (
+        <button
+          className="menu-scrim"
+          aria-label="Close navigation"
+          onClick={() => setMenuOpen(false)}
+        />
+      ) : null}
+      <aside
+        id="app-navigation"
+        className={menuOpen ? "menu-visible" : ""}
+        role={menuOpen ? "dialog" : undefined}
+        aria-modal={menuOpen || undefined}
+        aria-label="Navigation menu"
+      >
+        <div className="drawer-head">
+          <div className="brand">
+            <span className="mark">✚</span>
+            <span>
+              <strong>CareFiji</strong>
+              <small>BULA MATERNITY</small>
+            </span>
+          </div>
+          <button
+            className="icon-button drawer-close"
+            aria-label="Close navigation"
+            onClick={() => setMenuOpen(false)}
+          >
+            <CloseIcon />
+          </button>
+        </div>
+        <p className="sidecaption">SECURE DEMO WORKSPACE</p>
+        <nav aria-label="Primary navigation">
+          {pages.map((item) => (
+            <button
+              key={item}
+              className={item === activePage ? "active" : ""}
+              onClick={() => choosePage(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </nav>
+        <a
+          className="download-app"
+          href={iosDownloadUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => setMenuOpen(false)}
+        >
+          <DownloadIcon />
+          <span>
+            <strong>Download App</strong>
+            <small>iOS 15 or later</small>
+          </span>
+        </a>
+        <button className="logout" onClick={logout}>
+          Sign out
+        </button>
+        <div className="bottom">Suva, Fiji · Synthetic data only</div>
+      </aside>
+      <main>
+        <header>
+          <div>
+            <small>CAREFIJI / {activePage.toUpperCase()}</small>
+            <h1>{activePage}</h1>
+          </div>
+          <div className="actions">
+            <span>DEMO ONLY</span>
+            <b>{user.role}</b>
+          </div>
+        </header>
+        <section>
+          <Content
+            page={activePage}
+            data={data}
+            user={user}
+            act={act}
+            audit={audit}
+          />
+          {status ? (
+            <p className="status-message" role="status">
+              {status}
+            </p>
+          ) : null}
+          <p className="status">
+            Authenticated prototype · no real patient information permitted.
+            <br />
+            Copyright @ BASA
+          </p>
+        </section>
+      </main>
+      <nav className="mobile-tabs" aria-label="Quick navigation">
+        {mobileTabs.map((item) => {
+          const active = item === activePage;
+          const label =
+            item === "Appointments"
+              ? "Appts"
+              : item === "Maternity Wards"
+                ? "Wards"
+                : item;
+          const count =
+            item === "Patients"
+              ? data.patients.length
+              : item === "Appointments"
+                ? data.appointments.length
+                : null;
+          return (
+            <button
+              key={item}
+              className={active ? "tab-active" : ""}
+              aria-current={active ? "page" : undefined}
+              onClick={() => choosePage(item)}
+            >
+              <span className="tab-icon">
+                <TabIcon name={item} />
+                {count !== null ? (
+                  <span
+                    className={`tab-badge ${item === "Appointments" ? "badge-alert" : ""}`}
+                  >
+                    {count}
+                  </span>
+                ) : null}
+                {active ? <span className="tab-dot" /> : null}
+              </span>
+              <span>{label}</span>
+            </button>
+          );
+        })}
+        <button
+          aria-expanded={menuOpen}
+          aria-controls="app-navigation"
+          onClick={() => setMenuOpen(true)}
+        >
+          <span className="tab-icon">
+            <TabIcon name="Menu" />
+          </span>
+          <span>Menu</span>
+        </button>
+        <span className="home-indicator" aria-hidden="true" />
+      </nav>
+    </div>
+  );
 }
