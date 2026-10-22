@@ -479,14 +479,24 @@ function Login({ onLogin }) {
 
   return (
     <main className="login-page">
+      <Image
+        className="login-baby-background"
+        src="/pregnancy/stage-32.png"
+        alt=""
+        fill
+        sizes="100vw"
+        aria-hidden="true"
+      />
+      <div className="login-background-wash" aria-hidden="true" />
+      <div className="login-vector-pattern" aria-hidden="true" />
       <section className="login-card">
-        <div className="brand brand-dark">
-          <span className="mark">✚</span>
-          <span>
-            <strong>CareFiji</strong>
-            <small>BULA MATERNITY</small>
-          </span>
-        </div>
+        <Image
+          className="login-logo"
+          src="/branding/carefiji-logo.png"
+          alt="CareFiji — Bula Maternity"
+          width={180}
+          height={180}
+        />
         <h1>Welcome to the demonstration workspace.</h1>
         <p>
           Explore synthetic maternity workflows with server-enforced role

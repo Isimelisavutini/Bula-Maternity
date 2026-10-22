@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 240" width="100%" height="auto">
+  <defs>
+    <style>
+      .bg { fill: #FAF8F5; }
+      .dark-fill { fill: #1A202C; }
+      .fine-line { stroke: #1A202C; stroke-width: 1.5; fill: none; }
+      .mid-line { stroke: #1A202C; stroke-width: 3; fill: none; }
+      .thick-line { stroke: #1A202C; stroke-width: 5; fill: none; }
+    </style>
+    <pattern id="pacific-cuff-tile" width="200" height="240" patternUnits="userSpaceOnUse">
+      <path d="M 0,25 Q 25,12 50,25 Q 75,12 100,25 Q 125,12 150,25 Q 175,12 200,25" class="mid-line" />
+      <path d="M 0,33 L 200,33" class="thick-line" />
+      <polygon points="100,60 160,120 100,180 40,120" class="mid-line" />
+      <polygon points="100,72 148,120 100,168 52,120" fill="none" stroke="#0D7A73" stroke-width="2" />
+      <polygon points="100,82 112,108 88,108" class="dark-fill" />
+      <polygon points="100,158 112,132 88,132" class="dark-fill" />
+      <polygon points="62,120 88,108 88,132" class="dark-fill" />
+      <polygon points="138,120 112,108 112,132" class="dark-fill" />
+      <circle cx="100" cy="120" r="4.5" fill="#FAF8F5" stroke="#1A202C" stroke-width="2" />
+      <path d="M 0,207 L 200,207" class="thick-line" />
+      <path d="M 0,215 Q 25,227 50,215 Q 75,227 100,215 Q 125,227 150,215 Q 175,227 200,215" class="mid-line" />
+    </pattern>
+  </defs>
+  <rect width="1200" height="240" class="bg" />
+  <rect width="1200" height="240" fill="url(#pacific-cuff-tile)" />
+</svg>
