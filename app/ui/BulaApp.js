@@ -127,10 +127,14 @@ export default function BulaApp() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([api("session"), api("data")]).then(([session, result]) => {
+    api("session").then(async (session) => {
+      if (!session.user) return { session, result: null };
+      const result = await api("data");
+      return { session, result };
+    }).then(({ session, result }) => {
       if (!active) return;
       setUser(session.user);
-      setData(result.data);
+      setData(result?.data || null);
     }).catch(() => {}).finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, []);

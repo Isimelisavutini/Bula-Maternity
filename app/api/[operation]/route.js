@@ -24,8 +24,8 @@ async function userRequired() {
 }
 
 async function handleGet(operation) {
+  if (operation === "session") return response({ user: await readSession() });
   const user = await userRequired();
-  if (operation === "session") return response({ user });
   const data = await readData();
   if (operation === "data") {
     requirePermission(user, "read");

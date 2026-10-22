@@ -21,7 +21,7 @@ npm install
 npm run dev
 ```
 
-Without Redis variables, local development uses in-memory data that resets when the server restarts. Set the variables from `.env.example` to test durable storage locally.
+Without Redis variables, the app uses in-memory demonstration data that resets when the server process restarts. Set the variables from `.env.example` to test durable storage locally.
 
 Run the quality checks with:
 
@@ -34,10 +34,10 @@ npm run build
 ## Deploying to Vercel
 
 1. Import this GitHub repository into Vercel. Framework detection should select Next.js automatically.
-2. In the Vercel project, open **Storage / Marketplace** and create or connect an Upstash Redis database.
-3. Confirm the integration provides `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` to the project.
-4. Add `SESSION_SECRET` in project environment variables. Generate a long random value; do not commit it.
-5. Redeploy the project.
+2. Deploy immediately for zero-configuration demonstration mode, which uses resettable in-memory data and the public demo session flow.
+3. For durable shared state, open **Storage / Marketplace**, connect an Upstash Redis database, and confirm the integration provides `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`.
+4. Optionally add a long random `SESSION_SECRET` in project environment variables to replace the public demo signing fallback. Do not commit its value.
+5. Redeploy after changing environment variables.
 
 The checked-in `vercel.json` selects the Next.js framework and reproducible `npm ci` / `npm run build` commands. In Vercel project settings, leave **Root Directory** at the repository root and clear any legacy **Output Directory** override left from the former static prototype.
 
@@ -56,7 +56,7 @@ The sign-in screen supplies the corresponding password when a role is selected. 
 
 ## Production limitations
 
-Before real-world clinical use, replace the demo identity flow with a managed identity provider and verified staff/patient accounts. Independent security testing, privacy and regulatory review, clinical governance, backups and disaster recovery, retention policies, tamper-evident audit logging, and validated infrastructure are also required.
+The zero-configuration mode is intentionally ephemeral and its session-signing fallback is public because every demonstration role is public. Before real-world clinical use, replace the demo identity flow with a managed identity provider and verified staff/patient accounts. Independent security testing, privacy and regulatory review, clinical governance, backups and disaster recovery, retention policies, tamper-evident audit logging, and validated infrastructure are also required.
 
 The former Charming implementation remains in `src/` as migration reference and is not included in the Next.js runtime.
 
