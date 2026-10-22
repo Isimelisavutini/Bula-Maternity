@@ -1,0 +1,58 @@
+.dashboard-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 184px;
+  padding: 12px;
+  border-radius: 20px;
+  background: #faf8f5;
+}
+
+.dashboard-brand img { display: block; width: 160px; height: auto; }
+.dashboard-brand-compact { width: 84px; padding: 0; border-radius: 0; background: transparent; }
+.dashboard-brand-compact img { width: 84px; }
+
+.shell aside { position: relative; isolation: isolate; }
+.shell aside::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: url('/branding/pacific-cuff.svg') center bottom / 650px 130px repeat-y;
+  opacity: 0.06;
+  filter: invert(1);
+}
+
+.dashboard-surface { position: relative; isolation: isolate; }
+.dashboard-surface::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: url('/branding/pacific-cuff.svg') center top / 1000px 200px repeat;
+  opacity: 0.035;
+}
+
+.dashboard-content::before,
+.portal-shell > section::before {
+  content: "";
+  display: block;
+  height: 34px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  background: url('/branding/pacific-cuff.svg') center / 170px 34px repeat-x;
+  opacity: 0.28;
+}
+
+.portal-header .dashboard-brand { width: 120px; padding: 0; background: transparent; }
+.portal-header .dashboard-brand img { width: 120px; }
+
+@media (max-width: 800px) {
+  .shell { padding-top: calc(104px + env(safe-area-inset-top)); }
+  .shell .mobile-bar { height: calc(104px + env(safe-area-inset-top)); padding-top: calc(8px + env(safe-area-inset-top)); padding-bottom: 8px; }
+  .shell aside { position: fixed; }
+  .dashboard-content::before,
+  .portal-shell > section::before { height: 26px; margin-bottom: 18px; background-size: 130px 26px; opacity: 0.22; }
+}

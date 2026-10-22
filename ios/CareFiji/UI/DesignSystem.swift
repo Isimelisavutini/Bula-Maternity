@@ -19,14 +19,10 @@ struct CareCard<Content: View>: View {
 
 struct BrandView: View {
     var body: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "cross.fill").font(.title2.bold()).foregroundColor(.white).frame(width: 42, height: 42).background(CareColors.teal).clipShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
-            VStack(alignment: .leading, spacing: 0) {
-                Text("CareFiji").font(.title3.bold()).foregroundColor(CareColors.navy)
-                Text("BULA MATERNITY").font(.caption2.bold()).tracking(2).foregroundColor(CareColors.darkTeal)
-            }
-        }
-        .accessibilityElement(children: .combine)
+        Image("CareFijiLogo")
+        .resizable()
+        .scaledToFit()
+        .frame(width: 104, height: 104)
         .accessibilityLabel("CareFiji Bula Maternity")
     }
 }

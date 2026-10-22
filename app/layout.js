@@ -1,6 +1,7 @@
 import "./globals.css";
 import "./growth.css";
 import "./login.css";
+import "./dashboard.css";
 
 export const metadata = {
   title: "CareFiji — Bula Maternity",

@@ -40,6 +40,10 @@ struct DashboardView: View {
             ScrollView {
                 LazyVStack(spacing: 16) {
                     PatientHeader(sync: sync)
+                    Image(decorative: "PacificCuff")
+                        .resizable()
+                        .scaledToFit()
+                        .opacity(0.25)
                     HStack(alignment: .top) {
                         VStack(alignment: .leading, spacing: 4) { Text("Bula Vinaka, Mere! 🌺").font(.title2.bold()).foregroundColor(CareColors.navy); Text("CWM Suva Clinic · Today is feeling peaceful").font(.caption).foregroundColor(.secondary) }
                         Spacer(); Text("W\(actualWeek)").font(.caption.bold()).foregroundColor(CareColors.darkTeal).padding(8).background(Color.teal.opacity(0.1)).clipShape(RoundedRectangle(cornerRadius: 10))

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import BrandLogo from "./BrandLogo";
 import { useCallback, useEffect, useState } from "react";
 
 function MenuIcon() {
@@ -1060,13 +1061,7 @@ export default function BulaApp() {
     <div className="shell">
       {splashControls}
       <div className="mobile-bar">
-        <div className="brand brand-mobile">
-          <span className="mark">✚</span>
-          <span>
-            <strong>CareFiji</strong>
-            <small>BULA MATERNITY</small>
-          </span>
-        </div>
+        <BrandLogo compact />
         <div className="mobile-actions">
           <span
             className="avatar online"
@@ -1100,13 +1095,7 @@ export default function BulaApp() {
         aria-label="Navigation menu"
       >
         <div className="drawer-head">
-          <div className="brand">
-            <span className="mark">✚</span>
-            <span>
-              <strong>CareFiji</strong>
-              <small>BULA MATERNITY</small>
-            </span>
-          </div>
+          <BrandLogo />
           <button
             className="icon-button drawer-close"
             aria-label="Close navigation"
@@ -1145,7 +1134,7 @@ export default function BulaApp() {
         </button>
         <div className="bottom">Suva, Fiji · Synthetic data only</div>
       </aside>
-      <main>
+      <main className="dashboard-surface">
         <header>
           <div>
             <small>CAREFIJI / {activePage.toUpperCase()}</small>
@@ -1156,7 +1145,7 @@ export default function BulaApp() {
             <b>{user.role}</b>
           </div>
         </header>
-        <section>
+        <section className="dashboard-content">
           <Content
             page={activePage}
             data={data}
