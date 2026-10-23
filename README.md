@@ -6,6 +6,7 @@ A Pacific-inspired maternity hospital workflow prototype for Fiji, with a Next.j
 
 ## What changed
 
+- The public homepage (`/`) introduces CareFiji with Pacific artwork, mother/hospital guides and access links. The synthetic workspace is now at `/demo`; `/demo?role=patient` and `/demo?role=midwife` preset the demo identity selector only, without signing in or changing permissions. The registered patient portal stays at `/patient`.
 - Next.js App Router provides the web entry point; a server-only `BACKEND_API_URL` rewrite sends API requests to C# on Azure.
 - The C# backend ports demo workflows and patient/iOS sync APIs without changing their client contracts. Temporary JavaScript handlers remain available until the Azure cutover is verified.
 - Signed, HTTP-only cookies replace Charming identity for demonstration identities across six roles, including three care-pod midwives.

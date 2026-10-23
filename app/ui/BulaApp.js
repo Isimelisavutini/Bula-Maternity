@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import BrandLogo from "./BrandLogo";
 import { AskMyMidwife, CarePodWorkspace, MyMidwifeCard } from "./CarePod";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -449,9 +450,9 @@ async function api(operation, options) {
   return body;
 }
 
-function Login({ onLogin }) {
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("bula-admin");
+function Login({ onLogin, initialUsername = "admin" }) {
+  const [username, setUsername] = useState(initialUsername);
+  const [password, setPassword] = useState(`bula-${initialUsername}`);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const credentials = {
@@ -551,7 +552,8 @@ function Login({ onLogin }) {
           </p>
         ) : null}
         <p>
-          <a href="/patient">Open the production patient portal</a>
+          <Link href="/patient">Open the production patient portal</Link>
+          <Link href="/">About CareFiji · back to home</Link>
         </p>
       </section>
     </main>
@@ -955,7 +957,7 @@ function Content({ page, data, user, act, audit, onNavigate }) {
   );
 }
 
-export default function BulaApp() {
+export default function BulaApp({ initialDemoRole = "admin" }) {
   const dataGeneration = useRef(0);
   const [user, setUser] = useState(null);
   const [data, setData] = useState(null);
@@ -1067,6 +1069,7 @@ export default function BulaApp() {
       <>
         {splashControls}
         <Login
+          initialUsername={initialDemoRole}
           onLogin={async (nextUser) => {
             setUser(nextUser);
             const result = await api("data");

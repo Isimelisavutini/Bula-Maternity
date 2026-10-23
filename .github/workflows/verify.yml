@@ -58,6 +58,7 @@ jobs:
           done
           BACKEND_CONTRACT_URL=http://127.0.0.1:3100 node --test tests/backend-contract.test.mjs
           BACKEND_CONTRACT_URL=http://127.0.0.1:3100 node --test tests/care-pod-contract.test.mjs
+          FRONTEND_TEST_URL=http://127.0.0.1:3100 node --test tests/landing-contract.test.mjs
 
   web:
     runs-on: ubuntu-latest
@@ -71,6 +72,17 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      - name: Verify public landing page and demo entry points
+        shell: bash
+        run: |
+          npm run start -- --port 3100 &
+          web_pid=$!
+          trap 'kill "$web_pid"' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:3100/ > /dev/null; then break; fi
+            sleep 1
+          done
+          FRONTEND_TEST_URL=http://127.0.0.1:3100 node --test tests/landing-contract.test.mjs
 
   ios:
     runs-on: macos-latest
