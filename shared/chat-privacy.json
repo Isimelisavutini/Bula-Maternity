@@ -1,0 +1,10 @@
+{
+  "version": "care-chat-demo-v1",
+  "title": "Your chat, your choice",
+  "paragraphs": [
+    "Your message, any voice note, your name and recorded pregnancy week are stored in CareFiji's demonstration system. Midwives, doctors and administrators with clinical demo access can view them to support the shared care-pod workflow. No external messaging account is required.",
+    "This is a synthetic demonstration. Do not enter real patient details or sensitive information. It is not end-to-end encrypted messaging, and the chat is not continuously monitored or an emergency service. For bleeding, severe pain or changed baby movements, contact maternity care directly rather than waiting here.",
+    "You can leave this box unchecked and contact your clinic instead. You can uncheck it before sending; this does not delete messages already sent. Text drafts are stored on this device only when you choose Save text draft. Voice recording starts only after your permission and a tap on Record."
+  ],
+  "acceptanceLabel": "I have read this privacy note and agree to share this message and any voice note with the CareFiji demo care team."
+}

@@ -7,5 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="../../shared/care-pod.json" Link="care-pod.json" LogicalName="CareFiji.care-pod.json" />
+    <EmbeddedResource Include="../../shared/chat-privacy.json" Link="chat-privacy.json" LogicalName="CareFiji.chat-privacy.json" />
   </ItemGroup>
 </Project>

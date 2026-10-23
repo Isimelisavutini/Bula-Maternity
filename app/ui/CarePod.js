@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
   careCategories,
+  chatPrivacy,
   coveringMidwife,
   safetyFlags,
 } from "../../lib/care-pod-domain";
@@ -316,15 +317,51 @@ function VoiceRecorder({ audio, onChange }) {
   );
 }
 
-function Conversation({ thread }) {
+function PrivacyConsent({ accepted, onChange }) {
   return (
-    <div className="care-conversation" aria-label="Conversation messages">
+    <div className="care-privacy" role="region" aria-label="Chat privacy and consent">
+      <h4>{chatPrivacy.title}</h4>
+      <p>CareFiji chat · shared with your care team.</p>
+      <details>
+        <summary>Read the privacy and safety note</summary>
+        {chatPrivacy.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        <small>Notice version: {chatPrivacy.version}. Acceptance is recorded with each message using server time.</small>
+      </details>
+      <label className="care-check">
+        <input type="checkbox" checked={accepted} onChange={(event) => onChange(event.target.checked)} required />
+        {chatPrivacy.acceptanceLabel}
+      </label>
+      <small>Demo only: no real patient details. Not end-to-end encrypted. Not for emergencies.</small>
+    </div>
+  );
+}
+
+function Conversation({ thread, viewerRole = "Patient" }) {
+  const transcript = useRef(null);
+  const followLatest = useRef(true);
+  const previousThread = useRef(null);
+  useEffect(() => {
+    const element = transcript.current;
+    if (element && (followLatest.current || previousThread.current !== thread.id))
+      element.scrollTop = element.scrollHeight;
+    previousThread.current = thread.id;
+  }, [thread.id, thread.messages.length]);
+  return (
+    <div className="care-chat">
+      <div className="care-chat-header">
+        <span className="care-chat-avatar" aria-hidden="true">✚</span>
+        <div><strong>{viewerRole === "Patient" ? "Your midwife team" : thread.patientName}</strong><small>{thread.category} · {thread.status} · CareFiji chat</small></div>
+      </div>
+      <div ref={transcript} className="care-conversation" role="region" tabIndex={0} aria-label="Conversation messages" aria-live="polite" aria-relevant="additions" onScroll={(event) => {
+        const element = event.currentTarget;
+        followLatest.current = element.scrollHeight - element.scrollTop - element.clientHeight < 80;
+      }}>
       {thread.messages.map((message) => (
         <article
           key={message.id}
           className={
-            message.senderRole === "Patient"
-              ? "care-message care-from-patient"
+            (message.senderRole === "Patient") === (viewerRole === "Patient")
+              ? "care-message care-from-self"
               : "care-message"
           }
         >
@@ -341,8 +378,11 @@ function Conversation({ thread }) {
               aria-label={`Voice note from ${message.senderName}`}
             />
           ) : null}
+          <small className="care-message-receipt">Saved to conversation</small>
         </article>
       ))}
+      </div>
+      <p className="care-chat-footnote">Saved does not mean read. Updates every 15 seconds while open. Not an emergency service.</p>
     </div>
   );
 }
@@ -350,11 +390,13 @@ function Conversation({ thread }) {
 export function AskMyMidwife({ data, act }) {
   const care = data.carePod;
   const questionFlow = useRef(null);
+  const chatPanel = useRef(null);
   const [openRequest, setOpenRequest] = useState(0);
   const [step, setStep] = useState("safety");
   useEffect(() => {
-    questionFlow.current?.focus({ preventScroll: true });
-    questionFlow.current?.scrollIntoView({ block: "start" });
+    const target = ["sent", "history"].includes(step) ? chatPanel.current : questionFlow.current;
+    target?.focus({ preventScroll: true });
+    target?.scrollIntoView({ block: "start" });
   }, [step, openRequest]);
   const [flags, setFlags] = useState([]);
   const [category, setCategory] = useState("General");
@@ -368,6 +410,7 @@ export function AskMyMidwife({ data, act }) {
     }
   });
   const [audio, setAudio] = useState(null);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [article, setArticle] = useState(null);
@@ -387,7 +430,8 @@ export function AskMyMidwife({ data, act }) {
       window.removeEventListener("offline", update);
     };
   }, []);
-  const thread = care?.threads.find((t) => t.id === selected);
+  const thread = care?.threads.find((t) => t.id === selected) || care?.threads.at(-1);
+  const replyThread = care?.threads.find((t) => t.id === replyTo);
   async function safety() {
     if (!flags.length) {
       setStep("compose");
@@ -405,6 +449,10 @@ export function AskMyMidwife({ data, act }) {
   }
   async function submit(event) {
     event.preventDefault();
+    if (!privacyAccepted) {
+      setNotice("Please read and agree to the privacy note before sending.");
+      return;
+    }
     if (!online) {
       setNotice(
         "You’re offline. Save a text draft, then reconnect to send. Urgent concerns need direct contact.",
@@ -420,12 +468,16 @@ export function AskMyMidwife({ data, act }) {
         audio,
         category,
         safetyChecked: true,
+        privacyConsent: true,
+        privacyVersion: chatPrivacy.version,
       },
     );
     setBusy(false);
     if (saved) {
       setText("");
       setAudio(null);
+      setPrivacyAccepted(false);
+      setSelected(replyTo);
       try {
         localStorage.removeItem("carefiji-demo-care-draft");
       } catch {}
@@ -444,8 +496,8 @@ export function AskMyMidwife({ data, act }) {
       <div className="care-page-heading">
         <div>
           <small>YOUR CONTINUITY OF CARE</small>
-          <h2>Ask my midwife</h2>
-          <p>A familiar team, one shared conversation.</p>
+          <h2>Chat with my midwife</h2>
+          <p>A familiar team, one shared conversation. All here in CareFiji.</p>
         </div>
         <span className="care-demo-label">Synthetic demo</span>
       </div>
@@ -457,6 +509,8 @@ export function AskMyMidwife({ data, act }) {
           setFlags([]);
           setSelected(null);
           setReplyTo(null);
+          setPrivacyAccepted(false);
+          setAudio(null);
           setNotice("");
           setOpenRequest((value) => value + 1);
         }}
@@ -513,9 +567,10 @@ export function AskMyMidwife({ data, act }) {
               </label>
             ))}
           </fieldset>
+          {flags.length ? <p className="care-notice">This action shares your selected symptoms with the demo care team and saves a demo alert. Do not enter real patient information. For contact guidance without sharing, use “Get urgent help” above.</p> : null}
           <button onClick={safety} disabled={busy}>
             {flags.length
-              ? "Get urgent contact options"
+              ? "Get urgent help & record demo alert"
               : "None of these — continue"}
           </button>
         </section>
@@ -540,8 +595,13 @@ export function AskMyMidwife({ data, act }) {
       ) : null}
       {step === "compose" ? (
         <section className="care-panel">
-          <h3>What would you like to ask?</h3>
+          <h3>{replyTo ? "Continue your chat" : "Start a conversation"}</h3>
+          {replyThread ? <Conversation thread={replyThread} /> : <p>Send a message to your care pod. Replies appear here in CareFiji.</p>}
           <form className="care-form" onSubmit={submit}>
+            <PrivacyConsent accepted={privacyAccepted} onChange={(accepted) => {
+              setPrivacyAccepted(accepted);
+              if (!accepted) setAudio(null);
+            }} />
             <label>
               Topic
               <select
@@ -570,13 +630,13 @@ export function AskMyMidwife({ data, act }) {
                 placeholder="Type in English, iTaukei, or Hindi…"
               />
             </label>
-            <VoiceRecorder audio={audio} onChange={setAudio} />
+            {privacyAccepted ? <VoiceRecorder audio={audio} onChange={setAudio} /> : <small>Agree to the privacy note to enable voice recording and sending.</small>}
             <small>
               Your record’s gestation ({data.patients[0]?.weeks || "—"} weeks)
               is attached when sent. No background recording.
             </small>
             <div className="care-inline-actions">
-              <button disabled={busy || (!text.trim() && !audio) || !online}>
+              <button disabled={busy || (!text.trim() && !audio) || !online || !privacyAccepted}>
                 {busy ? "Sending…" : "Send to my pod"}
               </button>
               <button
@@ -611,13 +671,14 @@ export function AskMyMidwife({ data, act }) {
           onClick={() => {
             setFlags([]);
             setReplyTo(null);
+            setPrivacyAccepted(false);
             setStep("safety");
           }}
         >
           Ask another question
         </button>
       ) : null}
-      <section className="care-panel">
+      <section ref={chatPanel} tabIndex={-1} className="care-panel care-chat-history" aria-label="Your conversations">
         <h3>Your conversations</h3>
         <p>
           Response targets are demo estimates during staffed hours, not a
@@ -627,9 +688,16 @@ export function AskMyMidwife({ data, act }) {
           <div className="care-thread-list">
             {[...care.threads].reverse().map((item) => (
               <button
-                className={`care-thread ${selected === item.id ? "care-selected" : ""}`}
+                className={`care-thread ${thread?.id === item.id ? "care-selected" : ""}`}
                 key={item.id}
-                onClick={() => setSelected(item.id)}
+                onClick={() => {
+                  setSelected(item.id);
+                  setReplyTo(null);
+                  setPrivacyAccepted(false);
+                  setAudio(null);
+                  setStep("history");
+                  setOpenRequest((value) => value + 1);
+                }}
               >
                 <strong>{item.category}</strong>
                 <span>
@@ -642,7 +710,7 @@ export function AskMyMidwife({ data, act }) {
         ) : (
           <p>No questions yet. Your messages and replies will appear here.</p>
         )}
-        {thread ? (
+        {thread && step !== "compose" ? (
           <>
             <Conversation thread={thread} />
             {thread.status !== "Closed" ? (
@@ -650,13 +718,15 @@ export function AskMyMidwife({ data, act }) {
                 className="care-secondary"
                 onClick={() => {
                   setReplyTo(thread.id);
+                  setPrivacyAccepted(false);
+                  setAudio(null);
                   setCategory(thread.category);
                   setFlags([]);
                   setStep("safety");
                   setNotice(
                     "Complete the safety check before sending a follow-up.",
                   );
-                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  setOpenRequest((value) => value + 1);
                 }}
               >
                 Continue conversation
@@ -903,7 +973,7 @@ export function CarePodWorkspace({ data, user, act }) {
                 {thread.category} · Week {thread.gestationWeek} ·{" "}
                 {thread.status}
               </p>
-              <Conversation thread={thread} />
+              <Conversation thread={thread} viewerRole={user.role} />
               {thread.status !== "Closed" ? (
                 <>
                   <h4>Draft responses — review before sending</h4>

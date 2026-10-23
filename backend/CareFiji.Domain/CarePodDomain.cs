@@ -6,6 +6,17 @@ namespace CareFiji.Domain;
 
 public static class CarePodDomain
 {
+    public static readonly string PrivacyVersion = ReadPrivacyVersion();
+    private static string ReadPrivacyVersion()
+    {
+        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("CareFiji.chat-privacy.json")!;
+        return JsonNode.Parse(stream)!["version"]!.GetValue<string>();
+    }
+    private static JsonObject Consent(JsonObject payload, DemoUser user, DateTimeOffset now)
+    {
+        if (payload["privacyConsent"] is not JsonValue value || !value.TryGetValue<bool>(out var accepted) || !accepted || Text(payload, "privacyVersion") != PrivacyVersion) Invalid();
+        return new JsonObject { ["version"] = PrivacyVersion, ["acceptedAt"] = now.ToString("O"), ["acceptedBy"] = user.Id };
+    }
     public static readonly string[] Actions = ["setMidwifeStatus", "assignCarePod", "submitCareQuestion", "followupCareQuestion", "raiseCareAlert", "replyCareQuestion", "closeCareQuestion", "bookCareAppointment", "acknowledgeCareAlert"];
     private static readonly string[] StaffRoles = ["Administrator", "Doctor", "Midwife"];
     private static readonly Dictionary<string, int> Targets = new() { ["Baby Kicks"] = 45, ["Pain/Cramps"] = 240, ["Food/Herbs"] = 360, ["Discharge"] = 240, ["Vitamins"] = 360, ["Emotional Support"] = 120, ["General"] = 360 };
@@ -56,6 +67,13 @@ public static class CarePodDomain
         ["senderRole"] = user.Role, ["text"] = text, ["audio"] = audio, ["at"] = now.ToString("O")
     };
 
+    private static JsonObject PatientMessage(DemoUser user, string text, string? audio, DateTimeOffset now, JsonObject consent)
+    {
+        var message = Message(user, text, audio, now);
+        message["privacyConsent"] = consent;
+        return message;
+    }
+
     public static string Apply(JsonObject data, DemoUser user, string action, JsonObject payload, DateTimeOffset now)
     {
         var care = State(data); data["carePod"] = care; string target;
@@ -89,6 +107,7 @@ public static class CarePodDomain
                 }
                 else
                 {
+                    var consent = Consent(payload, user, now);
                     var body = MessageText(payload); var voice = Audio(payload); var category = Text(payload, "category");
                     if (payload["safetyChecked"] is not JsonValue v || !v.TryGetValue<bool>(out var checkedSafety) || !checkedSafety || !Targets.ContainsKey(category) || (body == "" && voice is null) || care["threads"]!.AsArray().Count >= 100) { Invalid(); return ""; }
                     care["threads"]!.AsArray().Add(new JsonObject
@@ -97,7 +116,7 @@ public static class CarePodDomain
                         ["assignedTo"] = Cover(care, "CF1001"), ["category"] = category,
                         ["priority"] = new[] { "Baby Kicks", "Pain/Cramps", "Emotional Support" }.Contains(category) ? "Attention" : "Routine",
                         ["gestationWeek"] = patient["weeks"]!.DeepClone(), ["status"] = "Open", ["createdAt"] = now.ToString("O"),
-                        ["dueAt"] = now.AddMinutes(Targets[category]).ToString("O"), ["messages"] = new JsonArray(Message(user, body, voice, now))
+                        ["dueAt"] = now.AddMinutes(Targets[category]).ToString("O"), ["messages"] = new JsonArray(PatientMessage(user, body, voice, now, consent))
                     });
                 }
                 break;
@@ -105,9 +124,10 @@ public static class CarePodDomain
                 if (user.Role != "Patient") throw new DomainException("PERMISSION_DENIED:care.patient");
                 var ownThread = care["threads"]!.AsArray().FirstOrDefault(t => Text(t, "id") == Text(payload, "threadId") && Text(t, "patientId") == "CF1001");
                 if (ownThread is null) throw new DomainException("NOT_FOUND");
+                var followupConsent = Consent(payload, user, now);
                 var followupText = MessageText(payload); var followupAudio = Audio(payload);
                 if (payload["safetyChecked"] is not JsonValue check || !check.TryGetValue<bool>(out var safe) || !safe || (followupText == "" && followupAudio is null) || Text(ownThread, "status") == "Closed" || ownThread["messages"]!.AsArray().Count >= 50) Invalid();
-                ownThread["messages"]!.AsArray().Add(Message(user, followupText, followupAudio, now)); ownThread["status"] = "Open";
+                ownThread["messages"]!.AsArray().Add(PatientMessage(user, followupText, followupAudio, now, followupConsent)); ownThread["status"] = "Open";
                 ownThread["dueAt"] = now.AddMinutes(Targets[Text(ownThread, "category")]).ToString("O"); target = Text(ownThread, "id"); break;
             case "replyCareQuestion":
             case "closeCareQuestion":

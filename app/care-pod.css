@@ -306,20 +306,28 @@
 }
 .care-conversation {
   display: grid;
+  align-content: start;
   gap: 12px;
-  padding: 16px 0;
+  padding: 18px 14px;
+  max-height: 420px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #f3f8f7;
 }
 .care-message {
+  width: fit-content;
+  min-width: 0;
   max-width: 94%;
   padding: 15px;
   background: #eef6f3;
   border: 1px solid #d7e9e4;
   border-radius: 13px;
 }
-.care-message.care-from-patient {
+.care-message.care-from-self {
   margin-left: auto;
-  background: #faf8f5;
-  border-color: #e6e2dc;
+  background: #d9f2ec;
+  border-color: #afd9d1;
+  border-bottom-right-radius: 3px;
 }
 .care-message > div {
   display: flex;
@@ -335,6 +343,75 @@
   margin-bottom: 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+.care-chat {
+  border: 1px solid #c8dfda;
+  border-radius: 18px;
+  overflow: hidden;
+  margin: 18px 0;
+}
+.care-chat-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+  color: #fff;
+  background: #086b70;
+}
+.care-chat-header small {
+  display: block;
+  color: #d6f0eb;
+  margin-top: 4px;
+  font-size: 12px;
+}
+.care-chat-avatar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #ffffff24;
+  font-size: 24px;
+}
+.care-chat-footnote,
+.care-message-receipt {
+  display: block;
+  font-size: 11px;
+  color: #486661;
+}
+.care-chat-footnote {
+  padding: 12px 16px;
+  margin: 0;
+  background: #fff;
+}
+.care-message-receipt {
+  margin-top: 10px;
+}
+.care-privacy {
+  padding: 16px;
+  border: 1px solid #c7dcd8;
+  border-left: 4px solid #0d7a73;
+  border-radius: 12px;
+  background: #f1f8f5;
+  color: #244b49;
+}
+.care-privacy h4 {
+  margin: 0;
+  font-size: 17px;
+}
+.care-privacy p,
+.care-privacy .care-check {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.care-privacy summary {
+  cursor: pointer;
+  padding: 12px 0;
+  font-weight: 700;
+}
+.care-privacy input {
+  flex-shrink: 0;
 }
 .care-roster {
   display: grid;
@@ -449,12 +526,14 @@
   }
 }
 .care-question-flow,
+.care-chat-history,
 .care-inbox,
 .care-response {
   scroll-margin-top: 180px;
 }
 
 .care-question-flow:focus-visible,
+.care-chat-history:focus-visible,
 .care-inbox:focus-visible,
 .care-response:focus-visible {
   outline: 3px solid var(--teal, #0aa6a6);

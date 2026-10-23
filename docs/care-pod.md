@@ -14,6 +14,14 @@ The web demonstration now includes the patient “Ask My Midwife” screen and a
 
 ## Behavior and limits
 
+### Built-in chat and privacy consent
+
+CareFiji chat uses its own patient/care-team conversation bubbles, sender names, device-local timestamps, scrollable history and voice-note playback. It does not integrate an external messenger. Patient messages align to the sender's side; staff see care-team replies on their own side. A saved message is not a delivered/read receipt. History remains readable without consenting to another send.
+
+Before each patient message or follow-up, an unchecked-by-default privacy checkbox explains the demo's recipients, stored information, optional device drafts, recording permissions and non-emergency limitations. Declining keeps sending and recording unavailable, but does not block urgent contact guidance. Unchecking stops the recorder and discards the unsent recording; previously sent messages remain. The notice explicitly disclaims end-to-end encryption and prohibits real patient information in the demo. Its text/version lives in `shared/chat-privacy.json`, embedded in C# and imported by the web/JavaScript fallback.
+
+Both APIs reject missing, false, non-boolean or outdated consent, even when called outside the UI. Each accepted patient message stores the notice version, authenticated demo user ID and server acceptance timestamp alongside its existing audit event. Historical messages are not retroactively marked as consented. This is demonstration acknowledgement evidence, not production consent governance or a retention/deletion service. Changing a checkbox does not revoke an in-flight submission; acceptance records the explicit send action. Existing clients must send `privacyConsent: true` and the current `privacyVersion` for patient chat actions. Bump the notice version whenever its meaning or wording changes. Urgent alerts remain a separate explicit action with a symptom-sharing disclosure; direct emergency contact guidance is always available without sending an alert or agreeing to chat.
+
 The shared queue refreshes every 15 seconds while the web page is visible, plus on connectivity recovery and foreground return. Refreshing reads data only. Draft text can be saved on the device, but submitting or recording an alert needs connectivity. Offline draft text is not automatically sent; voice drafts are not saved across reloads. Request failures preserve the current draft and recording.
 
 The welcome uses device speech synthesis when available, explicitly labeled as a device-read welcome. Profiles and portraits are synthetic, not real clinical credentials. Text accepts English, iTaukei, and Hindi; no automated translation, transcription, or language-specific clinical interpretation is provided.

@@ -9,7 +9,7 @@ public sealed class CarePodTests
     private static readonly DateTimeOffset Now = DateTimeOffset.Parse("2026-10-23T08:00:00Z");
     private static DemoUser Patient => DemoDomain.Users["patient"].User;
     private static DemoUser Mere => DemoDomain.Users["midwife"].User;
-    private static JsonObject Question() => new() { ["category"] = "General", ["text"] = "What should I bring?", ["safetyChecked"] = true };
+    private static JsonObject Question() => new() { ["category"] = "General", ["text"] = "What should I bring?", ["safetyChecked"] = true, ["privacyConsent"] = true, ["privacyVersion"] = CarePodDomain.PrivacyVersion };
     private static Mutation Act(JsonObject data, DemoUser user, string action, JsonObject payload) => DemoDomain.Execute(data, user, action, payload, Now);
 
     [Fact]
@@ -61,7 +61,8 @@ public sealed class CarePodTests
         var id = data["carePod"]!["threads"]![0]!["id"]!.GetValue<string>();
         data = Act(data, Mere, "replyCareQuestion", new JsonObject { ["threadId"] = id, ["text"] = "Bring your antenatal record." }).Data;
         Assert.Equal("Replied", DemoDomain.Text(data["carePod"]!["threads"]![0], "status"));
-        data = Act(data, Patient, "followupCareQuestion", new JsonObject { ["threadId"] = id, ["text"] = "Thank you", ["safetyChecked"] = true }).Data;
+        var followup = Question(); followup["threadId"] = id; followup["text"] = "Thank you";
+        data = Act(data, Patient, "followupCareQuestion", followup).Data;
         Assert.Equal("Open", DemoDomain.Text(data["carePod"]!["threads"]![0], "status"));
         data = Act(data, Mere, "bookCareAppointment", new JsonObject { ["threadId"] = id, ["date"] = "2026-11-02" }).Data;
         Assert.Equal(2, data["appointments"]!.AsArray().Count); Assert.Equal("Pending", DemoDomain.Text(data["appointments"]!.AsArray().Last(), "status"));
@@ -90,6 +91,34 @@ public sealed class CarePodTests
         Assert.Equal("VALIDATION_FAILED", result.Error); Assert.Null(result.Data["carePod"]);
         payload = Question(); payload["audio"] = new JsonObject { ["invalid"] = true };
         Assert.Equal("VALIDATION_FAILED", Act(DemoDomain.Seed(), Patient, "submitCareQuestion", payload).Error);
+    }
+
+    [Fact]
+    public void ConsentIsRequiredForEachPatientMessageAndStampedByServer()
+    {
+        foreach (var value in new JsonNode?[] { null, JsonValue.Create(false), JsonValue.Create("true") })
+        {
+            var invalid = Question(); invalid["privacyConsent"] = value;
+            var rejected = Act(DemoDomain.Seed(), Patient, "submitCareQuestion", invalid);
+            Assert.Equal("VALIDATION_FAILED", rejected.Error);
+            Assert.Null(rejected.Data["carePod"]);
+            Assert.Contains("rejected", DemoDomain.Text(rejected.Data["audit"]!.AsArray().Last(), "outcome"));
+        }
+        var stale = Question(); stale["privacyVersion"] = "old-notice";
+        Assert.Equal("VALIDATION_FAILED", Act(DemoDomain.Seed(), Patient, "submitCareQuestion", stale).Error);
+        var payload = Question(); payload["acceptedBy"] = "other"; payload["acceptedAt"] = "2099-01-01";
+        var data = Act(DemoDomain.Seed(), Patient, "submitCareQuestion", payload).Data;
+        var thread = data["carePod"]!["threads"]![0]!;
+        var evidence = thread["messages"]![0]!["privacyConsent"]!;
+        Assert.Equal(CarePodDomain.PrivacyVersion, DemoDomain.Text(evidence, "version"));
+        Assert.Equal(Patient.Id, DemoDomain.Text(evidence, "acceptedBy"));
+        Assert.Equal(Now, DateTimeOffset.Parse(DemoDomain.Text(evidence, "acceptedAt")));
+        var followup = Question(); followup["threadId"] = thread["id"]!.DeepClone(); followup["privacyConsent"] = false;
+        Assert.Equal("VALIDATION_FAILED", Act(data, Patient, "followupCareQuestion", followup).Error);
+        followup["privacyConsent"] = true;
+        var result = Act(data, Patient, "followupCareQuestion", followup);
+        Assert.Null(result.Error);
+        Assert.Equal(CarePodDomain.PrivacyVersion, DemoDomain.Text(result.Data["carePod"]!["threads"]![0]!["messages"]![1]!["privacyConsent"], "version"));
     }
 
     [Fact]

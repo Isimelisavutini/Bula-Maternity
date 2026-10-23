@@ -1,10 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { applyAction, demoUsers, seed, viewForRole } from "../lib/domain.js";
-import { careState, coveringMidwife } from "../lib/care-pod-domain.js";
+import { careState, coveringMidwife, chatPrivacy } from "../lib/care-pod-domain.js";
 
 const patient = demoUsers.patient; const midwife = demoUsers.midwife; const kesa = demoUsers.kesa; const now = new Date("2026-10-23T08:00:00Z");
-const question = { category: "General", text: "What should I bring to my appointment?", safetyChecked: true };
+const question = { category: "General", text: "What should I bring to my appointment?", safetyChecked: true, privacyConsent: true, privacyVersion: chatPrivacy.version };
 function act(data, user, action, payload) { return applyAction(data, user, action, payload, now).next; }
 
 test("legacy datasets receive a complete care pod without changing the seed", () => {
@@ -19,6 +19,21 @@ test("patient identity and gestation are taken from the server record", () => {
 test("safety confirmation and message metadata are mandatory", () => {
   for (const payload of [{ ...question, safetyChecked: false }, { ...question, text: "" }, { ...question, category: "Unknown" }, { ...question, audio: "javascript:alert(1)" }, { ...question, audio: { invalid: true } }])
     assert.throws(() => act(seed, patient, "submitCareQuestion", payload), /VALIDATION_FAILED/);
+});
+test("each patient message requires current explicit consent with server-stamped evidence", () => {
+  for (const value of [undefined, false, "true", null]) {
+    assert.throws(() => act(seed, patient, "submitCareQuestion", { ...question, privacyConsent: value }), /VALIDATION_FAILED/);
+  }
+  assert.throws(() => act(seed, patient, "submitCareQuestion", { ...question, privacyVersion: "old-notice" }), /VALIDATION_FAILED/);
+  let data = act(seed, patient, "submitCareQuestion", { ...question, acceptedAt: "2099-01-01", acceptedBy: "someone-else" });
+  const threadId = data.carePod.threads[0].id;
+  const evidence = { version: chatPrivacy.version, acceptedAt: now.toISOString(), acceptedBy: patient.id };
+  assert.deepEqual(data.carePod.threads[0].messages[0].privacyConsent, evidence);
+  assert.throws(() => act(data, patient, "followupCareQuestion", { ...question, threadId, privacyConsent: false }), /VALIDATION_FAILED/);
+  assert.throws(() => act(data, patient, "followupCareQuestion", { ...question, threadId, privacyVersion: "old-notice" }), /VALIDATION_FAILED/);
+  data = act(data, patient, "followupCareQuestion", { ...question, threadId, text: "A second message" });
+  assert.deepEqual(data.carePod.threads[0].messages.at(-1).privacyConsent, evidence);
+  assert.equal(data.carePod.threads[0].messages.length, 2);
 });
 test("in-delivery and off-duty statuses reroute unanswered questions to the pod buddy", () => {
   let data = act(seed, patient, "submitCareQuestion", question);
